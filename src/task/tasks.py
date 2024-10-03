@@ -15,7 +15,11 @@ def dynamic(x):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 @app.task
-def static(x):
-    command = "sleep 20; ls"
+def static(id):
+    command = "semgrep --config ~/semgrep/myRules ~/tmp/{}.sol".format(id)
+    print(command)
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    print("run")
+    print(result.stderr)
+    print(result.stdout)
     return result.stdout

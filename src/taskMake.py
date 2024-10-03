@@ -1,8 +1,8 @@
 
 from task.tasks import analysis, dynamic, static
 from celery import group
-def staticTaskMake():
-    result = static.delay(6)
+def staticTaskMake(hash):
+    result = static.delay(hash)
     res = {
         "status": 0, 
         "id": result.id,  
