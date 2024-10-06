@@ -13,7 +13,7 @@ def setOpDynamicAnalysis(task_id, opcode):
     #확인하는 로직 해야함
     #result = subprocess.run("".format(opcode), shell=True, capture_output=True, text=True)
 
-def setAddressDynamicAnalysis(task_id, address):
+def setDynamicAnalysis(task_id, address):
     a = 1
     #result = subprocess.run("cast send --create {} --private-key $anvil_pk".format(opcode), shell=True, capture_output=True, text=True)
     #확인하는 로직 해야함

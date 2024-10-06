@@ -16,7 +16,7 @@ def dynamic(x):
     return result.stdout
 @app.task
 def static(id):
-    command = "semgrep --config ~/semgrep/myRules ~/tmp/{}.sol".format(id)
+    command = "semgrep --config ~/semgrep/myRules ~/tmp/static_{}.sol".format(id)
     print(command)
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     print("run")

@@ -32,37 +32,52 @@ async def recv_result(request: Request):
         body = json.loads(body)
     except json.JSONDecodeError:
         return {"error": "Invalid JSON data"}
-    print( body.get("contract") )
-    print( body.get("bytecode") )
+    
     print( body.get("source") )
-    isContract = body.get("contract") is not None
-    isBytecode = body.get("bytecode") is not None
-    isSource = body.get("source") is not None
-    print(isContract)
-    print(isBytecode)
-    print(isSource)
-    if(isContract and isBytecode and isSource):
+    
+    print( body.get("currency0"))
+    print( body.get("currency1"))
+    print( body.get("fee"))
+    print( body.get("tickSpacing"))
+    print( body.get("hooks"))
+
+    
+    #Static
+    isSource      =  body.get("source") is not None
+
+    #Dynamic
+    isHooks       =  body.get("hooks") is not None
+    isCurrency0   =  body.get("currency0") is not None
+    isCurrency1   =  body.get("currency1") is not None
+    isFee         =  body.get("fee") is not None
+    isTickSpacing =  body.get("tickSpacing") is not None
+    
+
+    if( (isHooks or isCurrency0 or isCurrency1 or isFee or isTickSpacing) and isSource):
         return {
             "msg" : "nono"
         }
-    if( (isContract ^ isBytecode ) and isSource ): # 정적 동적
-        #그룹을 만들기
+    timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
+    if( (isHooks and isCurrency0 and isCurrency1 and isFee and isTickSpacing ) and isSource ): # 정적 동적
+        #그룹을 만들기 # 병렬말고 직렬로 하도록?
         print("1")
-
         task_info = analysisTaskMake()
-    elif( (isContract or isBytecode) and not isSource): #동적만
+
+    elif( (isHooks and isCurrency0 and isCurrency1 and isFee and isTickSpacing ) and not isSource): #동적만
         #동적 테스크 만들기
+        analysisSetting.setDynamicAnalysis(timeHash, body.get("currency0") )
         task_info = dynamicTaskMake()
         print("2")
-    elif(isSource and not (isContract or isBytecode) ): #정적만
+
+    elif(isSource and not (isHooks or isCurrency0 or isCurrency1 or isFee or isTickSpacing) ): #정적만
         #정적 테스크 만들기
         
-        ha = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
         print(body.get("source"))
         print(dir(analysisSetting))
-        analysisSetting.setStaticAnalysis(ha, body.get("source"))
-        task_info = staticTaskMake(ha)
+        analysisSetting.setStaticAnalysis(timeHash, body.get("source"))
+        task_info = staticTaskMake(timeHash)
         print("3")
+
     else:
         return{
             "msg" : "nono"
@@ -73,4 +88,5 @@ async def recv_result(request: Request):
     }
 @app.get("/api/result/g/{group_id}")
 def get_task_group_status(group_id: str):
+    # groupID는 당장은 보류하는 것으로.. 
     return 'a'
