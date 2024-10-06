@@ -1,0 +1,3 @@
+[submodule "engine/gamza-static"]
+	path = engine/gamza-static
+	url = https://github.com/Gamzanet/gamza-static.git
