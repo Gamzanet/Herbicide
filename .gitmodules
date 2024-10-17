@@ -1,3 +1,6 @@
 [submodule "engine/gamza-static"]
 	path = engine/gamza-static
 	url = https://github.com/Gamzanet/gamza-static.git
+[submodule "engine/gamza-dynamic"]
+	path = engine/gamza-dynamic
+	url = https://github.com/Gamzanet/gamza-dynamic_V2.git

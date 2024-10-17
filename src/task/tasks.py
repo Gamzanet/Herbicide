@@ -12,10 +12,20 @@ def analysis(x, y):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 @app.task
-def dynamic(x):
-    command = "sleep 30; whoami"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return result.stdout
+def dynamic(rpc):
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # 목표 디렉토리 경로 설정 (상대 경로 사용)
+    target_dir = os.path.abspath(os.path.join(current_dir, '..', '..', 'engine', 'gamza-dynamic'))
+    
+    command = "forge test --match-path test/_inputPoolkey_PoolManager.t.sol --rpc-url {}".format(rpc)
+    print(subprocess.run("pwd",shell=True, text=True).stdout)
+    print(command)
+    path = os.path.abspath(__file__)
+    print(path)
+    result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=target_dir)
+    return result.stdout.split("\n")
 @app.task
 def static(id):
     src = os.path.dirname(os.path.abspath(__file__))

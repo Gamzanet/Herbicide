@@ -12,6 +12,8 @@ import analysisSetting
 import json
 import hashlib
 import time
+
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -65,13 +67,17 @@ async def recv_result(request: Request):
 
     elif( (isHooks and isCurrency0 and isCurrency1 and isFee and isTickSpacing ) and not isSource): #동적만
         #동적 테스크 만들기
-        analysisSetting.setDynamicAnalysis(timeHash, body.get("currency0") )
-        task_info = dynamicTaskMake()
+        analysisSetting.setDynamicAnalysis(timeHash, 
+                                           body.get("currency0"), 
+                                           body.get("currency1"), 
+                                           body.get("fee"), 
+                                           body.get("tickSpacing"), 
+                                           body.get("hooks")  )
+        task_info = dynamicTaskMake("https://base-sepolia.blockpi.network/v1/rpc/public")
         print("2")
 
     elif(isSource and not (isHooks or isCurrency0 or isCurrency1 or isFee or isTickSpacing) ): #정적만
         #정적 테스크 만들기
-        
         print(body.get("source"))
         print(dir(analysisSetting))
         analysisSetting.setStaticAnalysis(timeHash, body.get("source"))
