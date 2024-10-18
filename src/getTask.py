@@ -3,17 +3,19 @@ from celery.result import AsyncResult, GroupResult
 
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
-    print(result.result[0])
-    print(f"Task Status: {result.status}")
-    if result.state == "PENDING":
-        return {"task_id": task_id, "status": "Pending"}
-    elif result.state == "FAILURE":
-        return {"task_id": task_id, "status": "Failure"}
-    elif result.state == "SUCCESS":
-        print(f"Task result: {result.result}")
-        return {"task_id": task_id, "status": "Success", "result": result.result}
-    else:
-        return {"task_id": task_id, "status": result.state}
+    try:
+        print(f"Task Status: {result.status}")
+        if result.state == "PENDING":
+            return {"task_id": task_id, "status": "Pending"}
+        elif result.state == "FAILURE":
+            return {"task_id": task_id, "status": "Failure"}
+        elif result.state == "SUCCESS":
+            print(f"Task result: {result.result}")
+            return {"task_id": task_id, "status": "Success", "result": result.result}
+        else:
+            return {"task_id": task_id, "status": result.state}
+    except:
+        return{"task_id": task_id, "status":"result not found"}
     
 def getGroupTask(group_id):
     group_result = GroupResult(group_id, app=app)

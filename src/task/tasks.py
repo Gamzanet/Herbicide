@@ -4,7 +4,7 @@ import time
 from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
-from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse
+from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse, getChkOnlyByPoolManager, timeTestUsingStep
 from .threadWork import threadRun
 # 작업 정의
 @app.task
@@ -22,11 +22,22 @@ def dynamic(timeHash, rpc, currency0, currency1):
     print("timeHash : {}".format(timeHash))
     print("rpc : {} , c0 : {} : c1 : {}".format(rpc,currency0, currency1))
     st = time.time()
-    commands.append("forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {}".format(rpc))
-    commands.append("forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {}".format(rpc))
-    commands.append("forge test --match-path test/hookNoHookCompare/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(rpc))
-    commands.append("forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(rpc))
-    
+    option = "--rpc-url {}".format(rpc)
+    _exportPath = "export _targetPoolKey='dynamic_{}.json';".format(timeHash)
+    #head = "forge test --match-path test/inputPoolkey/"
+    #tests = ["_MinimumTest.t.sol","_time_std_PoolManager.t.sol","_hookNoHookCompare.t.sol -vv | grep using","_return.t.sol","_check_onlyByPoolManager.t.sol"]
+    #for _test in tests:
+    #    commands.append("{}{} {}".format(head,_test, option))
+    # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {}".format(rpc))
+    # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {}".format(rpc))
+    # commands.append("forge test --match-path test/inputPoolkey/ --rpc-url {} ".format(rpc))
+    # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {} -vv | grep delta-log".format(rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {}".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {}".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_check_onlyByPoolManager.t.sol --rpc-url {}".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
     threads = []
     for command in commands:
         threads.append(threadRun(command))
@@ -46,6 +57,8 @@ def dynamic(timeHash, rpc, currency0, currency1):
     analysisResult[2] = hookCompareParse(analysisResult[2])
     print("end 2")
     analysisResult[3] = getPriceUsingPyth(rpc, currency0, currency1, analysisResult[3])#analysisResult[0]))
+    analysisResult[4] = getChkOnlyByPoolManager(analysisResult[4])
+    analysisResult[5] = timeTestUsingStep(analysisResult[5])
     ed = time.time()
     print("Done : {}".format(ed))
     print("time : {}".format(ed - st))
