@@ -5,7 +5,7 @@ from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
 from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse
-
+from .threadWork import threadRun
 # 작업 정의
 @app.task
 def analysis(x, y):
@@ -14,8 +14,6 @@ def analysis(x, y):
     return result.stdout
 @app.task
 def dynamic(timeHash, rpc, currency0, currency1):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    target_dir = os.path.abspath(os.path.join(current_dir, '..', '..', 'engine', 'gamza-dynamic'))
 
     commands = []
     analysisResult = []
@@ -29,11 +27,13 @@ def dynamic(timeHash, rpc, currency0, currency1):
     commands.append("forge test --match-path test/hookNoHookCompare/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(rpc))
     commands.append("forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(rpc))
     
+    threads = []
     for command in commands:
-        print(command)
-        path = os.path.abspath(__file__)
-        print(path)
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=target_dir)
+        threads.append(threadRun(command))
+
+    analysisResult = []
+    for thread in threads:
+        result = thread.join()
         analysisResult.append(result)
     ed = time.time()
     print("Done : {}".format(ed))
