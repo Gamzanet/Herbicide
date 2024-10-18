@@ -4,6 +4,7 @@ import time
 from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
+from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse
 
 # 작업 정의
 @app.task
@@ -12,20 +13,45 @@ def analysis(x, y):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 @app.task
-def dynamic(rpc):
-
+def dynamic(timeHash, rpc, currency0, currency1):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 목표 디렉토리 경로 설정 (상대 경로 사용)
     target_dir = os.path.abspath(os.path.join(current_dir, '..', '..', 'engine', 'gamza-dynamic'))
+
+    commands = []
+    analysisResult = []
+    # 목표 디렉토리 경로 설정 (상대 경로 사용)
     
-    command = "forge test --match-path test/_inputPoolkey_PoolManager.t.sol --rpc-url {}".format(rpc)
-    print(subprocess.run("pwd",shell=True, text=True).stdout)
-    print(command)
-    path = os.path.abspath(__file__)
-    print(path)
-    result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=target_dir)
-    return result.stdout.split("\n")
+    print("timeHash : {}".format(timeHash))
+    print("rpc : {} , c0 : {} : c1 : {}".format(rpc,currency0, currency1))
+    st = time.time()
+    commands.append("forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {}".format(rpc))
+    commands.append("forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {}".format(rpc))
+    commands.append("forge test --match-path test/hookNoHookCompare/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(rpc))
+    commands.append("forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(rpc))
+    
+    for command in commands:
+        print(command)
+        path = os.path.abspath(__file__)
+        print(path)
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=target_dir)
+        analysisResult.append(result)
+    ed = time.time()
+    print("Done : {}".format(ed))
+    print("time : {}".format(ed - st))
+    print("start : {}".format(st))
+    analysisResult[0] = minimumTestParse(analysisResult[0])
+    print("end 0 ")
+    analysisResult[1] = timeBasedMinimumTestParse(analysisResult[1])
+    print("end 1")
+    analysisResult[2] = hookCompareParse(analysisResult[2])
+    print("end 2")
+    analysisResult[3] = getPriceUsingPyth(rpc, currency0, currency1, analysisResult[3])#analysisResult[0]))
+    ed = time.time()
+    print("Done : {}".format(ed))
+    print("time : {}".format(ed - st))
+    print("start : {}".format(st))
+    print(analysisResult)
+    return analysisResult
 @app.task
 def static(id):
     src = os.path.dirname(os.path.abspath(__file__))

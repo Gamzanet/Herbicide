@@ -3,6 +3,7 @@ from celery.result import AsyncResult, GroupResult
 
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
+    print(result.result[0])
     print(f"Task Status: {result.status}")
     if result.state == "PENDING":
         return {"task_id": task_id, "status": "Pending"}

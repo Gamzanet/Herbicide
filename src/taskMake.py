@@ -11,10 +11,8 @@ def staticTaskMake(hash):
     print(f"Task Created: {res}")
     return res
 
-def dynamicTaskMake(rpc):
-    base_rpc = "https://base-sepolia.blockpi.network/v1/rpc/public"
-    base_rpc = "https://base-sepolia.infura.io/v3/33c8211714a74336b1af760a211c7037"
-    result = dynamic.delay(base_rpc)
+def dynamicTaskMake(timeHash, rpc, c0, c1):
+    result = dynamic.delay(timeHash, rpc, c0, c1)
     res = {
         "status": 0, 
         "id": result.id,  

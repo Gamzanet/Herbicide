@@ -35,19 +35,21 @@ async def recv_result(request: Request):
     except json.JSONDecodeError:
         return {"error": "Invalid JSON data"}
     
+    #print( body.get("data").get("cocoa") )
     print( body.get("source") )
-    
-    print( body.get("currency0"))
-    print( body.get("currency1"))
-    print( body.get("fee"))
-    print( body.get("tickSpacing"))
-    print( body.get("hooks"))
+    print( body.get("currency0") )
+    print( body.get("currency1") )
+    print( body.get("fee") )
+    print( body.get("tickSpacing") )
+    print( body.get("hooks") )
 
     
     #Static
     isSource      =  body.get("source") is not None
 
     #Dynamic
+    data = body.get("data")
+
     isHooks       =  body.get("hooks") is not None
     isCurrency0   =  body.get("currency0") is not None
     isCurrency1   =  body.get("currency1") is not None
@@ -73,7 +75,7 @@ async def recv_result(request: Request):
                                            body.get("fee"), 
                                            body.get("tickSpacing"), 
                                            body.get("hooks")  )
-        task_info = dynamicTaskMake("https://base-sepolia.blockpi.network/v1/rpc/public")
+        task_info = dynamicTaskMake(timeHash, __import__('os').environ.get('uni'), body.get("currency0"), body.get("currency1"))
         print("2")
 
     elif(isSource and not (isHooks or isCurrency0 or isCurrency1 or isFee or isTickSpacing) ): #정적만
