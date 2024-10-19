@@ -5,6 +5,7 @@ from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
 from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse, getChkOnlyByPoolManager, timeTestUsingStep
+from .staticRun import staticRun
 from .threadWork import threadRun
 # 작업 정의
 @app.task
@@ -65,25 +66,8 @@ def dynamic(timeHash, rpc, currency0, currency1):
     print("start : {}".format(st))
     print(analysisResult)
     return analysisResult
-@app.task
-def static(id):
-    src = os.path.dirname(os.path.abspath(__file__))
-    engine_path = os.path.join(src, '..', '..', 'engine', 'gamza-static')
-    sys.path.append(engine_path)
-    import main
-    res = main.is_valid_hook(_target_path="~/tmp/static_{}.sol".format(id))
-    print("asdfasas : ~/tmp/static_{}.sol".format(id))
-    print("===res===")
-    print(res)
 
-    command = "semgrep --config ~/semgrep/myRules ~/tmp/static_{}.sol --emacs".format(id)
-    print(command)
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    print("run")
-    tmp = {
-        "res" : res,
-        "result" : result.stdout
-    }
-    print(result.stderr)
-    print(result.stdout)
+@app.task
+def static(timeHash, hook):
+    tmp = staticRun(timeHash, hook)
     return tmp
