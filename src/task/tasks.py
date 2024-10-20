@@ -33,8 +33,8 @@ def dynamic(timeHash, rpc, currency0, currency1):
     # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {}".format(rpc))
     # commands.append("forge test --match-path test/inputPoolkey/ --rpc-url {} ".format(rpc))
     # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {} -vv | grep delta-log".format(rpc))
-    commands.append("{} forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {}".format(_exportPath,rpc))
-    commands.append("{} forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {}".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+    commands.append("{} forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {} -vvv".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_check_onlyByPoolManager.t.sol --rpc-url {}".format(_exportPath,rpc))
@@ -69,5 +69,7 @@ def dynamic(timeHash, rpc, currency0, currency1):
 
 @app.task
 def static(timeHash, hook):
+    
     tmp = staticRun(timeHash, hook)
+    
     return tmp

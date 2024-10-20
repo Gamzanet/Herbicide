@@ -91,6 +91,7 @@ def validation(body):
     isSource      =  body.get("source") is not None
     #Dynamic
     PoolKey = body.get("data").get("Poolkey")
+    print("PoolKey : {}\n mode : {}".format(PoolKey, mode))
 
     isHooks       =  PoolKey.get("hooks") is not None
     isCurrency0   =  PoolKey.get("currency0") is not None
