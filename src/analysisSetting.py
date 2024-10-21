@@ -24,7 +24,7 @@ def setDynamicAnalysis(timeHash, currency0, currency1, fee, tickSpacing, hooks):
             "hooks": hooks
         }
     }
-    engine_path = os.path.join("data","dynamic_{}.json".format(timeHash))#f"dynamic_{timeHash}.json")
+    engine_path = os.path.join("data","dynamic_{}_{}.json".format(timeHash,hooks))#f"dynamic_{timeHash}.json")
     print(engine_path)
     with open(engine_path, "w") as f:
         json.dump(data, f)

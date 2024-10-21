@@ -52,7 +52,7 @@ async def recv_result(request: Request):
                                            data["tickSpacing"], 
                                            data["hooks"] )
         
-        task_info = dynamicTaskMake( timeHash, __import__('os').environ.get('uni'), data["currency0"], data["currency1"] )
+        task_info = dynamicTaskMake( timeHash, __import__('os').environ.get('uni'), data["currency0"], data["currency1"], data["hooks"] )
         print("2")
 
     elif( data["mode"] == 3 ): #정적만

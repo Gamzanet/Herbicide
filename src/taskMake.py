@@ -11,8 +11,8 @@ def staticTaskMake(timeHash, hook):
     print(f"Task Created: {res}")
     return res
 
-def dynamicTaskMake(timeHash, rpc, c0, c1):
-    result = dynamic.delay(timeHash, rpc, c0, c1)
+def dynamicTaskMake(timeHash, rpc, c0, c1, hooks):
+    result = dynamic.delay(timeHash, rpc, c0, c1, hooks)
     res = {
         "status": 0, 
         "id": result.id,  

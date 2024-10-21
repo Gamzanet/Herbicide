@@ -69,6 +69,12 @@ def minimumTestParse(result):
             try:
                 realRet["testList"][i]["description"] = msgs[i]
                 realRet["testList"][i]["trace"] = traces[failCnt]
+                if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
+                    realRet["testList"][i]["OOG"] = 1
+                else:
+                    realRet["testList"][i]["OOG"] = 0
+                
+
                 failCnt += 1
             except:
                 realRet["testList"][i]["description"] = "msg"                
@@ -79,7 +85,7 @@ def timeBasedMinimumTestParse(result):
     traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
     realRet = foundryTestParse(result)
     realRet["name"] = "Time-Based-Minimum_Test"
-    
+
     failCnt = 0
     for i in range(len(realRet["testList"])):
         if(realRet["testList"][i]["status"] == "FAIL"):
@@ -90,7 +96,7 @@ def timeBasedMinimumTestParse(result):
                 realRet["testList"][i]["trace"] = "trace not found"      
     return realRet
 
-def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
+def getPriceUsingPyth(rpc_url, token0_address, token1_address, result): 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     engine_path = os.path.join(current_dir,'..','..', '..', 'engine', 'gamza-dynamic', 'test','inputPoolkey', 'utils')
     print(engine_path)
@@ -102,9 +108,11 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
     
     price = getOffchainPrice.fetch_token_price(token0_symbol, token1_symbol)
     result = result.stdout.split("\n")
-    tmp = {}
+    print(result)
+    
     data = []
     for i in range(len(result) -1):
+        tmp = {}
         tmp["name"] = result[i].replace(" ","").split(":")[0]
         tmp["value"] = result[i].replace(" ", "").split(":")[1]
         data.append(tmp)
@@ -122,6 +130,9 @@ def getChkOnlyByPoolManager(result):
     
     realRet = foundryTestParse(result)
     realRet["name"] = "OnlyByPoolManager-Chk"
+    for i in range(len(realRet["testList"])):
+        if(realRet["testList"][i]["status"] == "FAIL"):
+            realRet["testList"][i]["description"] = realRet["testList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
     return realRet
 
 
@@ -130,21 +141,25 @@ def timeTestUsingStep(result):
     res = result.stdout
     print(res)
     ret["revertAt"] = ""
-    if ("[FAIL: " in res):
-        tmp = res.split("time-test-")
-        times = tmp[1].split(" Start.")[0]
-        print(len(tmp))
-        tmp = tmp[len(tmp)-1]
-        re = tmp.split('warp end")')[1]
-        re = re.split("Suite result:")[0]
-        print("time : {}".format(times))
-        print(re)
-        ret["revertAt"] = times
-        ret["trace"] = re
-        ret["result"] = "time lock detection at {}".format(times)
-    else:
-        ret["revertAt"] = None
-        ret["result"] = "time lock test clear!"
-        ret["trace"] = ""
     ret["name"] = "time-based-step-test"
+    try:
+        if ("[FAIL: " in res):
+            tmp = res.split("time-test-")
+            times = tmp[1].split(" Start.")[0]
+            print(len(tmp))
+            tmp = tmp[len(tmp)-1]
+            re = tmp.split('warp end")')[1]
+            re = re.split("Suite result:")[0]
+            print("time : {}".format(times))
+            print(re)
+            ret["revertAt"] = times
+            ret["trace"] = re
+            ret["result"] = "time lock detection at {}".format(times)
+        else:
+            ret["revertAt"] = None
+            ret["result"] = "time lock test clear!"
+            ret["trace"] = ""
+    except:
+        ret["out"] = res
+
     return ret

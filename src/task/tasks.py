@@ -14,7 +14,7 @@ def analysis(x, y):
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     return result.stdout
 @app.task
-def dynamic(timeHash, rpc, currency0, currency1):
+def dynamic(timeHash, rpc, currency0, currency1, hooks):
 
     commands = []
     analysisResult = []
@@ -24,7 +24,7 @@ def dynamic(timeHash, rpc, currency0, currency1):
     print("rpc : {} , c0 : {} : c1 : {}".format(rpc,currency0, currency1))
     st = time.time()
     option = "--rpc-url {}".format(rpc)
-    _exportPath = "export _targetPoolKey='dynamic_{}.json';".format(timeHash)
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash,hooks)
     #head = "forge test --match-path test/inputPoolkey/"
     #tests = ["_MinimumTest.t.sol","_time_std_PoolManager.t.sol","_hookNoHookCompare.t.sol -vv | grep using","_return.t.sol","_check_onlyByPoolManager.t.sol"]
     #for _test in tests:
@@ -65,6 +65,9 @@ def dynamic(timeHash, rpc, currency0, currency1):
     print("time : {}".format(ed - st))
     print("start : {}".format(st))
     print(analysisResult)
+    response = {}
+    response["analysisResult"] = analysisResult
+    response["hooks"] = hooks
     return analysisResult
 
 @app.task
