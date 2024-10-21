@@ -2,27 +2,7 @@ import requests
 import json
 import time
 
-payload2 = json.dumps({
-	"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
-	"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
-	"fee": 0,
-	"tickSpacing": 60,
-	"hooks": "0x7e06d9b96178ab9e3d0d27f84f29476e42057ff0",
-	"data": {"cocoa" : "1234", "qwer":"3333"}
-})# unichain for-loop hook
-payload3 =json.dumps({
-	"data":{
-		"PoolKey":{
-			"currency0": "0x0197481B0F5237eF312a78528e79667D8b33Dcff",
-			"currency1": "0xA56569Bd93dc4b9afCc871e251017dB0543920d4",
-		    "fee": 0,
-		    "tickSpacing": 60,
-		    "hooks": "0xDefb3B8B58375e500d67cc31b91c51166cf8CaC0"
-		}
-	}
-}) ## only by poolmanager err 
-
-payload1 = json.dumps({
+payload_1 = json.dumps({
   "data": {
     "Poolkey": {
 		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
@@ -33,19 +13,7 @@ payload1 = json.dumps({
     },
     "mode" : 2
   }
-})# not implement hook
-payload_1 = json.dumps({
-  "data": {
-    "Poolkey": {
-		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
-		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
-		"fee": 0,
-		"tickSpacing": 60,
-		"hooks": "0xdab6453c40422F80467f5a426656aB3650cc3Ff0"
-    },
-    "mode" : 2
-  }
-})# oog hook
+})#  not implement hook
 
 payload_2 = json.dumps({
   "data": {
@@ -84,7 +52,7 @@ payload_4 = json.dumps({
     "mode" : 2
   }
 }) ## oog
-payload_4 = json.dumps({
+payload_5 = json.dumps({
   "data": {
     "Poolkey": {
 		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
@@ -96,16 +64,85 @@ payload_4 = json.dumps({
     "mode" : 2
   }
 }) ## kenny's oog
+payload_6 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x7e06d9b96178ab9e3d0d27f84f29476e42057ff0"
+    },
+    "mode" : 2
+  }
+})#  unichain for-loop hook
+
+payload_7 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xce12A4E8980a70B0f4Bf16d89dD734dDb507Cac0"
+    },
+    "mode" : 2
+  }
+})#  only by pool manager clear
+
+payload_8 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x697c70532f481D823ef3606b77EC94396Bfd8aC0"
+    },
+    "mode" : 2
+  }
+})#  time out hook
+#
 url = "http://localhost:8000/api/tasks"
 headers = {
     'Content-Type': 'application/json'
 }
 
-res = requests.post(url, headers = headers, data = payload_4)
-print(res.text)
-#time.sleep(2)
-res = requests.post(url, headers = headers, data = payload_3)
-print(res.text)
-#res = requests.post(url, headers = headers, data = payload3)
-#print(res.text)
+_payload_1 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x89e598609ada63375b9e3188d45c54f9f21bfff0"
+    },
+    "mode" : 2
+  }#
+})# all hook - complate
 
+_payload_2 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x7d61d057dD982b8B0A05a5871C7d40f8b96dd040"
+    },
+    "mode" : 2
+  }#
+})# takeprofit - complate
+
+
+# print("time-out hook")
+# res = requests.post(url, headers = headers, data = payload_8)
+# print(res.text)
+# time.sleep(2)
+print("all hook")
+res = requests.post(url, headers = headers, data = _payload_1)
+print(res.text)
+time.sleep(2)
+print("profit hook")
+res = requests.post(url, headers = headers, data = _payload_1)
+print(res.text)

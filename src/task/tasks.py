@@ -15,7 +15,7 @@ def analysis(x, y):
     return result.stdout
 @app.task
 def dynamic(timeHash, rpc, currency0, currency1, hooks):
-
+ 
     commands = []
     analysisResult = []
     # 목표 디렉토리 경로 설정 (상대 경로 사용)
@@ -33,12 +33,15 @@ def dynamic(timeHash, rpc, currency0, currency1, hooks):
     # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {}".format(rpc))
     # commands.append("forge test --match-path test/inputPoolkey/ --rpc-url {} ".format(rpc))
     # commands.append("forge test --match-path test/inputPoolkey/  --rpc-url {} -vv | grep delta-log".format(rpc))
+    # asd = subprocess.run("anvil --rpc-url https://unichain-sepolia.g.alchemy.com/v2/LVjDyU_Hfup9CLkn7lAl6LYu8cCw4HJm", shell=True, capture_output=True, text=True)
+
     commands.append("{} forge test --match-path test/inputPoolkey/_MinimumTest.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_time_std_PoolManager.t.sol  --rpc-url {} -vvv".format(_exportPath,rpc))
-    commands.append("{} forge test --match-path test/inputPoolkey/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using".format(_exportPath,rpc))
-    commands.append("{} forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep delta-log".format(_exportPath,rpc))
+    commands.append('{} forge test --match-path test/inputPoolkey/_hookNoHookCompare.t.sol --rpc-url {} -vv | grep using'.format(_exportPath,rpc))
+    commands.append('{} forge test --match-path test/inputPoolkey/_return.t.sol  --rpc-url {} -vv | grep -Ei "Amount[0-1]+ delta:"'.format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_check_onlyByPoolManager.t.sol --rpc-url {}".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/_time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+
     threads = []
     for command in commands:
         threads.append(threadRun(command))
@@ -60,6 +63,7 @@ def dynamic(timeHash, rpc, currency0, currency1, hooks):
     analysisResult[3] = getPriceUsingPyth(rpc, currency0, currency1, analysisResult[3])#analysisResult[0]))
     analysisResult[4] = getChkOnlyByPoolManager(analysisResult[4])
     analysisResult[5] = timeTestUsingStep(analysisResult[5])
+
     ed = time.time()
     print("Done : {}".format(ed))
     print("time : {}".format(ed - st))

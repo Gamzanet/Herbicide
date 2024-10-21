@@ -6,9 +6,10 @@ def hookCompareParse(result):
     result = result.stdout.split("\n")
     ret = {}
     ret["name"] = "hook-NoHook-Compare"
+    ret["msg"] = result
     for i in range(len(result)-1):
         tmp = result[i].split(" :  ")
-        ret[tmp[0].replace(" ","").replace("-using", "")] = tmp[1].replace(" ","")
+        ret[tmp[0].replace(" ","").replace("-using", "")] = (tmp[1].replace(" ",""))
     return ret
 
 def foundryTestParse(result):
@@ -73,8 +74,6 @@ def minimumTestParse(result):
                     realRet["testList"][i]["OOG"] = 1
                 else:
                     realRet["testList"][i]["OOG"] = 0
-                
-
                 failCnt += 1
             except:
                 realRet["testList"][i]["description"] = "msg"                
@@ -114,12 +113,13 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
     for i in range(len(result) -1):
         tmp = {}
         tmp["name"] = result[i].replace(" ","").split(":")[0]
-        tmp["value"] = result[i].replace(" ", "").split(":")[1]
+        tmp["value"] = (result[i].replace(" ", "").split(":")[1])
         data.append(tmp)
     print(price)
     print("result")
     print(result)
     ret = {}
+    ret["msg"] = result
     ret["name"] = "Price-compare-using-Pyth"
     ret["data"] = data
     ret["price"] = price
@@ -131,8 +131,11 @@ def getChkOnlyByPoolManager(result):
     realRet = foundryTestParse(result)
     realRet["name"] = "OnlyByPoolManager-Chk"
     for i in range(len(realRet["testList"])):
-        if(realRet["testList"][i]["status"] == "FAIL"):
-            realRet["testList"][i]["description"] = realRet["testList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
+        try:
+            if(realRet["testList"][i]["status"] == "FAIL"):
+                realRet["testList"][i]["description"] = realRet["testList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
+        except:
+            realRet["testList"][i]["description"] = realRet["testList"][i]["msg"]
     return realRet
 
 

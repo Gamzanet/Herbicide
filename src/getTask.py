@@ -6,6 +6,7 @@ def getTask(task_id):
     try:
         print(f"Task Status: {result.status}")
         if result.state == "PENDING":
+            print("pending....")
             return {"task_id": task_id, "status": "Pending"}
         elif result.state == "FAILURE":
             return {"task_id": task_id, "status": "Failure"}
