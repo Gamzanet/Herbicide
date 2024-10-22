@@ -166,3 +166,11 @@ def timeTestUsingStep(result):
         ret["out"] = res
 
     return ret
+def doubleInitParse(result):
+    realRet = foundryTestParse(result)
+    realRet["name"] = "double-Initialize-Test"
+    return realRet
+def upgradableParse(result):
+    realRet = foundryTestParse(result)
+    realRet["name"] = "Proxy-Test"
+    return realRet

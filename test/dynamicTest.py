@@ -135,14 +135,46 @@ _payload_2 = json.dumps({
 })# takeprofit - complate
 
 
-# print("time-out hook")
-# res = requests.post(url, headers = headers, data = payload_8)
-# print(res.text)
-# time.sleep(2)
-print("all hook")
-res = requests.post(url, headers = headers, data = _payload_1)
+_payload_3 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xb15ce080C38508a50a46c827c6D596da1e03a080"
+    },
+    "mode" : 2
+  }#
+})# double init
+
+_payload_3 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xb15ce080C38508a50a46c827c6D596da1e03a080"
+    },
+    "mode" : 2
+  }#
+})# double init
+_payload_4 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x15F3F147eB0278b46363529083751363Be248c00"
+    },
+    "mode" : 2
+  }#
+})# proxy hook
+print("double-init hook")
+res = requests.post(url, headers = headers, data = _payload_4)
 print(res.text)
 time.sleep(2)
-print("profit hook")
-res = requests.post(url, headers = headers, data = _payload_1)
-print(res.text)
+
+

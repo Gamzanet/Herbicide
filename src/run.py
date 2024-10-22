@@ -13,6 +13,8 @@ import json
 import hashlib
 import time
 
+from resultFind import findTest
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -37,7 +39,17 @@ async def recv_result(request: Request):
         return {
             "msg" : "nono"
         }
+    poolkey = {
+        "currency0" : data["currency0"], 
+        "currency1" : data["currency1"], 
+        "fee" : data["fee"], 
+        "tickSpacing" : data["tickSpacing"], 
+        "hooks" : data["hooks"]
+    }
     timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
+    testCache = findTest(poolkey, data["mode"])
+    if(testCache["status"] == 1):
+        return testCache
     if( data["mode"] == 1 ): # 정적 동적
         #그룹을 만들기 # 병렬말고 직렬로 하도록?
         print("1")
@@ -45,21 +57,19 @@ async def recv_result(request: Request):
 
     elif( data["mode"] == 2 ): #동적만
         #동적 테스크 만들기
-        analysisSetting.setDynamicAnalysis(timeHash, 
-                                           data["currency0"], 
-                                           data["currency1"], 
-                                           data["fee"], 
-                                           data["tickSpacing"], 
-                                           data["hooks"] )
+        
+        analysisSetting.setDynamicAnalysis(timeHash, poolkey )
         #
-        task_info = dynamicTaskMake( timeHash, __import__('os').environ.get('uni'), data["currency0"], data["currency1"], data["hooks"] )
+        task_info = dynamicTaskMake( timeHash, 
+                                    __import__('os').environ.get('uni'), 
+                                    poolkey )
         print("2")
 
     elif( data["mode"] == 3 ): #정적만
         #정적 테스크 만들기
         # print(body.get("source"))
         # print(dir(analysisSetting))
-        # analysisSetting.setStaticAnalysis(timeHash, body.get("source")) # 현재상황 소스 안받는것을 가정으로
+        # analysisSetting.setStaticAnalysis(timeHash, body.get("source")) # 현재상황 소스 안받는것을 가정으로, 10.21 소스 받을 수도 있음. 일단 냅두기\
         task_info = staticTaskMake(timeHash, data["hooks"])
         print("3")
 
