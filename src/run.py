@@ -48,8 +48,7 @@ async def recv_result(request: Request):
     }
     timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
     testCache = findTest(poolkey, data["mode"])
-    if(testCache["status"] == 1):
-        return testCache
+
     if( data["mode"] == 1 ): # 정적 동적
         #그룹을 만들기 # 병렬말고 직렬로 하도록?
         print("1")
@@ -79,7 +78,8 @@ async def recv_result(request: Request):
         }
     return {
         "msg": "Task created",
-        "info" : task_info
+        "info" : task_info,
+        "testCache" : testCache
     }
 @app.get("/api/result/g/{group_id}")
 def get_task_group_status(group_id: str):
