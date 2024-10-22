@@ -148,7 +148,7 @@ def timeTestUsingStep(result):
     try:
         if ("[FAIL: " in res):
             tmp = res.split("time-test-")
-            times = tmp[1].split(" Start.")[0]
+            times = res.split("Traces:")[0].split("Start.")[-2].split("time-test-")[-1]
             print(len(tmp))
             tmp = tmp[len(tmp)-1]
             re = tmp.split('warp end")')[1]

@@ -172,8 +172,32 @@ _payload_4 = json.dumps({
     "mode" : 2
   }#
 })# proxy hook
+_payload_5 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xd7b5397f95fA038e78dae2FD5956f11805bd8aC0"
+    },
+    "mode" : 2
+  }#
+})# 30 days hook
+_payload_6 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xF20Ac4669fc2bbAC775B46875E22Ba851bF64AC0"
+    },
+    "mode" : 2
+  }#
+})# 304 days hook
 print("double-init hook")
-res = requests.post(url, headers = headers, data = _payload_4)
+res = requests.post(url, headers = headers, data = _payload_6)
 print(res.text)
 time.sleep(2)
 
