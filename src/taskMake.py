@@ -1,8 +1,8 @@
 
 from task.tasks import analysis, dynamic, static
 from celery import group
-def staticTaskMake(hash):
-    result = static.delay(hash)
+def staticTaskMake(timeHash, hook):
+    result = static.delay(timeHash, hook)
     res = {
         "status": 0, 
         "id": result.id,  
@@ -11,11 +11,12 @@ def staticTaskMake(hash):
     print(f"Task Created: {res}")
     return res
 
-def dynamicTaskMake(timeHash, rpc, c0, c1):
-    result = dynamic.delay(timeHash, rpc, c0, c1)
+def dynamicTaskMake(timeHash, rpc,poolkey):
+    result = dynamic.delay(timeHash, rpc, poolkey)
     res = {
         "status": 0, 
         "id": result.id,  
+        "hooks" : poolkey["hooks"],
         "detail": result.status  
     }
     print(f"Task Created: {res}")

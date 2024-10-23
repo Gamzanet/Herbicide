@@ -14,17 +14,17 @@ def setOpDynamicAnalysis(task_id, opcode):
     #확인하는 로직 해야함
     #result = subprocess.run("".format(opcode), shell=True, capture_output=True, text=True)
 
-def setDynamicAnalysis(timeHash, currency0, currency1, fee, tickSpacing, hooks):
+def setDynamicAnalysis(timeHash, poolkey):
     data = {
         "data": {
-            "currency0": currency0,
-            "currency1": currency1,
-            "fee": fee,
-            "tickSpacing": tickSpacing,
-            "hooks": hooks
+            "currency0": poolkey["currency0"], 
+            "currency1": poolkey["currency1"], 
+            "fee": poolkey["fee"], 
+            "tickSpacing": poolkey["tickSpacing"], 
+            "hooks": poolkey["hooks"], 
         }
     }
-    engine_path = os.path.join("data","dynamic_{}.json".format(timeHash))#f"dynamic_{timeHash}.json")
+    engine_path = os.path.join("data","dynamic_{}_{}.json".format(timeHash,poolkey["hooks"]))#f"dynamic_{timeHash}.json")
     print(engine_path)
     with open(engine_path, "w") as f:
         json.dump(data, f)
