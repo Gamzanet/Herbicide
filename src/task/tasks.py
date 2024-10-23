@@ -51,6 +51,11 @@ def dynamic(timeHash, rpc, poolkey):
     analysisResult = []
     for thread in threads:
         result = thread.join()
+        threads.append(threadRun(command))
+
+    analysisResult = []
+    for thread in threads:
+        result = thread.join()
         analysisResult.append(result)
     ed = time.time()
     print("Done : {}".format(ed))
