@@ -13,7 +13,7 @@ import json
 import hashlib
 import time
 
-from resultFind import findTest
+from resultFind import findTest, _findTest
 
 
 app = FastAPI()
@@ -123,3 +123,43 @@ def validation(body):
     data["fee"]             = PoolKey.get("fee")
     data["tickSpacing"]     = PoolKey.get("tickSpacing")
     return data
+
+
+from fastapi.responses import StreamingResponse
+import time
+import asyncio
+async def event_stream(t,h, m, finder):
+    cnt = 0
+    current = []
+    while True:
+        tests = _findTest(t, h, m, finder)
+        print(t, h , m)
+        new = [item for item in tests if item not in current]
+        current = tests
+        print("c")
+        print(current)
+        print(new)
+        print(tests)
+        for i in range(len(new)):
+            print("send")
+            yield "complate idx : {}, task-id : {}\n".format(new[i]["idx"], new[i]["task_id"])
+        await asyncio.sleep(3)
+        if(len(current) >= len(finder)):
+            return
+        cnt += 1
+
+@app.get("/api/noti/{timeHash}/{hooks}/{mode}/{cpnt}")
+async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
+    idx = []
+    if(cpnt == 0): # price oracle
+        idx = [3]
+    if(cpnt == 1): # hook nohook compare
+        idx = [2]
+    if(cpnt == 2): # other tests
+        # minimum, timebasedminimum, poolmanager, time-step, 
+        # doubleInit, upgradable
+        idx = [0, 1, 4, 5, 6, 7] 
+    return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
+@app.get("/a")
+def read_root(request: Request):
+    return templates.TemplateResponse("a.html", {"request": request})

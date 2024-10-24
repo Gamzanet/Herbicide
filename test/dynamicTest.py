@@ -196,6 +196,19 @@ _payload_6 = json.dumps({
     "mode" : 2
   }#
 })# 304 days hook
+_payload_7 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xEB0E9255aaB63951464f8adF268f676575E92000"
+    },
+    "mode" : 2
+  }#
+})# init err hook
+# 
 print("double-init hook")
 res = requests.post(url, headers = headers, data = _payload_6)
 print(res.text)
