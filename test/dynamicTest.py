@@ -209,10 +209,23 @@ _payload_7 = json.dumps({
     "mode" : 2
   }#
 })# init err hook
+
+_payload_8 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 8388608,
+		"tickSpacing": 60,
+		"hooks": "0xb481719eFaE432b5268acC4166A95Dc68d928Ac0"
+    },
+    "mode" : 2
+  }#
+})# dynamic fee
 # 
 print("double-init hook")
-url = "http://localhost:7777/api/tasks"
-res = requests.post(url, headers = headers, data = _payload_6)
+url = "http://localhost:8000/api/tasks"
+res = requests.post(url, headers = headers, data = _payload_8)
 print(res.text)
 time.sleep(2)
 
