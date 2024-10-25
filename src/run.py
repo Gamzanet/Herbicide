@@ -151,14 +151,17 @@ async def event_stream(t,h, m, finder):
 @app.get("/api/noti/{timeHash}/{hooks}/{mode}/{cpnt}")
 async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
     idx = []
-    if(cpnt == 0): # price oracle
-        idx = [3]
-    if(cpnt == 1): # hook nohook compare
-        idx = [2]
-    if(cpnt == 2): # other tests
-        # minimum, timebasedminimum, poolmanager, time-step, 
-        # doubleInit, upgradable
-        idx = [0, 1, 4, 5, 6, 7] 
+    if (mode == 2): # dynamic
+        if(cpnt == 0): # price oracle
+            idx = [3]
+        if(cpnt == 1): # hook nohook compare
+            idx = [2]
+        if(cpnt == 2): # other tests
+            # minimum, timebasedminimum, poolmanager, time-step, 
+            # doubleInit, upgradable
+            idx = [0, 1, 4, 5, 6, 7] 
+    elif(mode == 3):
+        idx = []
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
 @app.get("/a")
 def read_root(request: Request):

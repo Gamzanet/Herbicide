@@ -31,7 +31,7 @@ def staticRun(timeHash, hook):
 
     # linting the target contract recursively lints all dependencies
     res: list[str] = layer_0.compile_slither(_paths[0])
-    print(res)
+    #print(res)
     ret["slither"] = res[0].split("\n")
 
     # to run semgrep rules,
@@ -55,6 +55,6 @@ def staticRun(timeHash, hook):
     ret["info-variable"] = _output_l
     _output_d: dict = get_variables(_target_path)
     ret["output"] = _output_d
-    
+    ret["__path"] = _paths
     os.chdir(dirs)
     return ret

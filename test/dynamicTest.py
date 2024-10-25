@@ -104,6 +104,7 @@ payload_8 = json.dumps({
 })#  time out hook
 #
 url = "http://localhost:8000/api/tasks"
+
 headers = {
     'Content-Type': 'application/json'
 }
@@ -210,6 +211,7 @@ _payload_7 = json.dumps({
 })# init err hook
 # 
 print("double-init hook")
+url = "http://localhost:7777/api/tasks"
 res = requests.post(url, headers = headers, data = _payload_6)
 print(res.text)
 time.sleep(2)
