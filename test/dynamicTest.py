@@ -222,10 +222,24 @@ _payload_8 = json.dumps({
     "mode" : 2
   }#
 })# dynamic fee
-# 
+# 0x9a52b4ed222B225372b485AA27f66E0bD0D53FF0
+
+_payload_9 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x356dc5a1783fA308673eE2C6EbfcfaA02d1bfFF0"
+    },
+    "mode" : 2
+  }#
+})# init double hook
+
 print("double-init hook")
 url = "http://localhost:8000/api/tasks"
-res = requests.post(url, headers = headers, data = _payload_8)
+res = requests.post(url, headers = headers, data = _payload_9)
 print(res.text)
 time.sleep(2)
 
