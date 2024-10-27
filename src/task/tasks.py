@@ -127,7 +127,7 @@ def dynamic_priceCheck(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = '{} forge test --match-path test/inputPoolkey/returnDelta.t.sol --rpc-url {} -vv | grep -Ei "Amount[0-1]+ delta:"'.format(_exportPath,rpc)
+    cmd = '{} forge test --match-path test/inputPoolkey/returnDelta.t.sol --rpc-url {} -vv | grep -Ei "Amount[0-1]+ delta:|-for-expected-current-|-for-expected-amount0"'.format(_exportPath,rpc)
     res = getPriceUsingPyth(rpc, poolkey["currency0"], poolkey["currency1"], testRun(cmd))
     response["timeHash"] = timeHash
     response["poolkey"] = poolkey

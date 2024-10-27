@@ -102,26 +102,61 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
     print(rpc_url)
     sys.path.append(engine_path)
     import getOffchainPrice
+    import getSwapPrice
+
     token0_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token0_address).strip()
     token1_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token1_address).strip()
     
     price = getOffchainPrice.fetch_token_price(token0_symbol, token1_symbol)
-    result = result.stdout.split("\n")
-    print(result)
-    
-    data = []
-    for i in range(len(result) -1):
-        tmp = {}
-        tmp["name"] = result[i].replace(" ","").split(":")[0]
-        tmp["value"] = (result[i].replace(" ", "").split(":")[1])
-        data.append(tmp)
-    print(price)
-    print("result")
-    print(result)
+    namelist = [
+        "addLiquidity6909-","addLiquidity-",
+        "Donate-",
+        "removeLiquidity6909-","removeLiquidity-",
+        "SWAP-exactIn Burn 6909", "SWAP-exactIn Mint 6909", 
+        "SWAP-exactIn-", "SWAP-exactOut Burn 6909", 
+        "SWAP-exactOut Mint 6909", "SWAP-exactOut-"
+    ]
+
+    result = result.stdout
+    tmp = {}
+    for i in range(len(namelist)):
+        find = re.findall(r'{}.*'.format(namelist[i]), result, re.MULTILINE)
+        r = []
+        t = {}
+        for j in range(len(find)):
+            # print(j)
+            # print(passed[j])
+            find[j] = find[j].replace("{}".format(namelist[i]),"")
+            key = find[j].split(":")[0].replace(" ","")
+            val = find[j].split(":")[1].replace(" ","")
+            #print(passed[j].split(":")[1].replace(" ","")[0])
+            if key[0] == '-':
+                #print("qweqeq")
+                key = key[1:]
+            t[key] = val
+        namelist[i] = namelist[i].replace(" ","-")
+        if(namelist[i][-1] == "-"):
+            namelist[i] = namelist[i][:len(namelist[i])-1]
+        tmp[namelist[i]] = t
+        t = {}
     ret = {}
-    ret["msg"] = result
+    for i in range(len(namelist)):
+      # calc_expected(price_current, liquidity,specified,fee):
+        if("SWAP-exact" in namelist[i]):
+            calc_value = getSwapPrice.calc_expected(
+                tmp[namelist[i]]["for-expected-current-price"] , 
+                tmp[namelist[i]]["for-expected-current-liquidity"], 
+                tmp[namelist[i]]["for-expected-amount0-specified"], 
+                tmp[namelist[i]]["for-expected-current-fee"]
+            )
+            tmp[namelist[i]]["calc"] = {}
+            tmp[namelist[i]]["calc"]["price_expected"] = calc_value[0]
+            tmp[namelist[i]]["calc"]["sqrtP_expected"] = calc_value[1]
+            tmp[namelist[i]]["calc"]["amount_in"] = calc_value[2]
+            tmp[namelist[i]]["calc"]["amount_out"] = calc_value[3]
+    #ret["msg"] = result
     ret["name"] = "Price-compare-using-Pyth"
-    ret["data"] = data
+    ret["data"] = tmp
     ret["price"] = price
     return ret
 
