@@ -39,15 +39,9 @@ async def recv_result(request: Request):
         return {
             "msg" : "nono"
         }
-    poolkey = {
-        "currency0" : data["currency0"], 
-        "currency1" : data["currency1"], 
-        "fee" : data["fee"], 
-        "tickSpacing" : data["tickSpacing"], 
-        "hooks" : data["hooks"]
-    }
+    
     timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
-    testCache = findTest(poolkey, data["mode"])
+    testCache = findTest(data["poolKey"], data["mode"])
 
     if( data["mode"] == 1 ): # 정적 동적
         #그룹을 만들기 # 병렬말고 직렬로 하도록?
@@ -56,12 +50,10 @@ async def recv_result(request: Request):
 
     elif( data["mode"] == 2 ): #동적만
         #동적 테스크 만들기
-        
-        analysisSetting.setDynamicAnalysis(timeHash, poolkey )
-        #
+        analysisSetting.setDynamicAnalysis(timeHash, data["poolKey"], data["deployer"] )
         task_info = dynamicTaskMake( timeHash, 
                                     __import__('os').environ.get('uni'), 
-                                    poolkey )
+                                    data["poolKey"] )
         print("2")
 
     elif( data["mode"] == 3 ): #정적만
@@ -69,7 +61,7 @@ async def recv_result(request: Request):
         # print(body.get("source"))
         # print(dir(analysisSetting))
         # analysisSetting.setStaticAnalysis(timeHash, body.get("source")) # 현재상황 소스 안받는것을 가정으로, 10.21 소스 받을 수도 있음. 일단 냅두기\
-        task_info = staticTaskMake(timeHash, data["hooks"])
+        task_info = staticTaskMake(timeHash, data["poolKey"]["hooks"])
         print("3")
 
     else:
@@ -101,6 +93,9 @@ def validation(body):
     isSource      =  body.get("source") is not None
     #Dynamic
     PoolKey = body.get("data").get("Poolkey")
+    deployer = body.get("data").get("deployer")
+    if (deployer is None):
+        deployer = "0x4e59b44847b379578588920cA78FbF26c0B4956C"
     print("PoolKey : {}\n mode : {}".format(PoolKey, mode))
 
     isHooks       =  PoolKey.get("hooks") is not None
@@ -117,11 +112,15 @@ def validation(body):
     data = {}
     data["mode"]          = mode
     data["status"]          = 1
-    data["hooks"]           = PoolKey.get("hooks")
-    data["currency0"]       = PoolKey.get("currency0")
-    data["currency1"]       = PoolKey.get("currency1")
-    data["fee"]             = PoolKey.get("fee")
-    data["tickSpacing"]     = PoolKey.get("tickSpacing")
+    _poolkey = {}
+    _poolkey["hooks"]           = PoolKey.get("hooks")
+    _poolkey["currency0"]       = PoolKey.get("currency0")
+    _poolkey["currency1"]       = PoolKey.get("currency1")
+    _poolkey["fee"]             = PoolKey.get("fee")
+    _poolkey["tickSpacing"]     = PoolKey.get("tickSpacing")
+    data["poolKey"] = _poolkey
+    data["deployer"] = deployer
+
     return data
 
 
@@ -151,14 +150,18 @@ async def event_stream(t,h, m, finder):
 @app.get("/api/noti/{timeHash}/{hooks}/{mode}/{cpnt}")
 async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
     idx = []
-    if(cpnt == 0): # price oracle
-        idx = [3]
-    if(cpnt == 1): # hook nohook compare
-        idx = [2]
-    if(cpnt == 2): # other tests
-        # minimum, timebasedminimum, poolmanager, time-step, 
-        # doubleInit, upgradable
-        idx = [0, 1, 4, 5, 6, 7] 
+    if (mode == 2): # dynamic
+        if(cpnt == 0): # price oracle
+            idx = [3]
+        if(cpnt == 1): # hook nohook compare
+            idx = [2]
+        if(cpnt == 2): # other tests
+            # minimum, timebasedminimum, poolmanager, time-step, 
+            # doubleInit, upgradable
+            idx = [0, 1, 4, 5, 6, 7] 
+    elif(mode == 3):
+        idx = []
+
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
 @app.get("/a")
 def read_root(request: Request):

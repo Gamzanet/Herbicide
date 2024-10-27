@@ -14,7 +14,7 @@ def setOpDynamicAnalysis(task_id, opcode):
     #확인하는 로직 해야함
     #result = subprocess.run("".format(opcode), shell=True, capture_output=True, text=True)
 
-def setDynamicAnalysis(timeHash, poolkey):
+def setDynamicAnalysis(timeHash, poolkey,deployer ):
     data = {
         "data": {
             "currency0": poolkey["currency0"], 
@@ -22,13 +22,10 @@ def setDynamicAnalysis(timeHash, poolkey):
             "fee": poolkey["fee"], 
             "tickSpacing": poolkey["tickSpacing"], 
             "hooks": poolkey["hooks"], 
-        }
+        },
+        "deployer": deployer
     }
     engine_path = os.path.join("data","dynamic_{}_{}.json".format(timeHash,poolkey["hooks"]))#f"dynamic_{timeHash}.json")
     print(engine_path)
     with open(engine_path, "w") as f:
         json.dump(data, f)
-    
-    #result = subprocess.run("cast send --create {} --private-key $anvil_pk".format(opcode), shell=True, capture_output=True, text=True)
-    #확인하는 로직 해야함
-    #result = subprocess.run("".format(opcode), shell=True, capture_output=True, text=True)

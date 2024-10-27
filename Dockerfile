@@ -39,8 +39,10 @@ RUN pip3 install fastapi uvicorn
 EXPOSE 8000 6379 5672
 
 # Start Redis and RabbitMQ services
-RUN service redis-server start && \
-    service rabbitmq-server start
+
+RUN service redis-server start
+RUN service rabbitmq-server start
+
 
 # Set up working directory
 
@@ -50,6 +52,7 @@ COPY . /app
 WORKDIR /app/src
 
 RUN pip3 install -r /app/requirements.txt
+
 
 # Command to run FastAPI (adjust if necessary)
 CMD ["tail", "-f", "/dev/null"]
