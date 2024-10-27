@@ -169,10 +169,9 @@ def timeTestUsingStep(result):
 def doubleInitParse(result):
     response = {}
     log_data = result.stdout.replace("  ","")
-    response["logs"] = log_data
     response["name"] = "double-Initialize-Test"
     # 정규식을 이용해 slot-write-N, prev_value, old_value, new_value 매칭
-    pattern = re.compile(r'slot-write-(\d+)\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})')
+    pattern = re.compile(r'slot-write-(\d+)\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{40})\n(0x[0-9a-fA-F]{40})\n')
     # defaultdict로 slot 데이터 저장
     slot_data = [[],[]]
 
@@ -182,31 +181,38 @@ def doubleInitParse(result):
         entry = {
             "slot" : match.group(2),           # slot 값
             "prev_value" : match.group(3),     # prevValue
-            "new_value" : match.group(4)       # newValue
+            "new_value" : match.group(4),       # newValue
+            "access_to" : match.group(5),       # account
+            "contract" : match.group(6)       # contract
         }
         slot_data[slot_number].append(entry)  # slot_write-N에 데이터 추가
     ret = []
     if len(slot_data[0])!= 0 and len(slot_data[1])!= 0:
-        set1 = {entry["slot"] for entry in slot_data[0]}
-        set2 = {entry["slot"] for entry in slot_data[1]}
+        set1 = {(entry["slot"], entry["contract"]) for entry in slot_data[0]}
+        set2 = {(entry["slot"], entry["contract"]) for entry in slot_data[1]}
         common_slots = set1 & set2  # 중복된 slot 값 찾기
         if common_slots:
             response["status"] = 1
-            for slot in common_slots:
+            for slot, contract in common_slots:
                 tmp = {"k1" : {}, "k2" : {}}
                 f = {"k1":0, "k2": 0}
                 for entry in slot_data[0]:
-                    if entry["slot"] == slot:
+                    if entry["slot"] == slot and entry["contract"] == contract:
                         tmp["k1"]["prev_value"] = entry["prev_value"]
                         tmp["k1"]["new_value"] = entry["new_value"]
+                        # tmp["k1"]["access_to"] = entry["access_to"]
+                        # tmp["k1"]["contract"] = entry["contract"]
                         f["k1"] = 1
                 for entry in slot_data[1]:
-                    if entry["slot"] == slot:
+                    if entry["slot"] == slot and entry["contract"] == contract:
                         tmp["k2"]["prev_value"] = entry["prev_value"]
                         tmp["k2"]["new_value"] = entry["new_value"]
+                        # tmp["k2"]["access_to"] = entry["access_to"]
+                        #tmp["k2"]["contract"] = entry["contract"]
                         f["k2"] = 1
                 if(f["k1"] == 1 and f["k2"] == 1):
                     tmp["slot"] = slot
+                    tmp["contract"] = contract
                     ret.append(tmp)
         else:
             response["status"] = 0
