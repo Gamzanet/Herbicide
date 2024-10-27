@@ -120,6 +120,7 @@ def validation(body):
     _poolkey["tickSpacing"]     = PoolKey.get("tickSpacing")
     data["poolKey"] = _poolkey
     data["deployer"] = deployer
+
     return data
 
 
@@ -160,6 +161,7 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
             idx = [0, 1, 4, 5, 6, 7] 
     elif(mode == 3):
         idx = []
+
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
 @app.get("/a")
 def read_root(request: Request):
