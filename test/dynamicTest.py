@@ -237,12 +237,74 @@ _payload_9 = json.dumps({
     "mode" : 2
   }#
 })# init double hook
-
-
+_payload_10 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xb481719eFaE432b5268acC4166A95Dc68d928Ac0"
+    },
+    "mode" : 2
+  }#
+})# time 
+_payload_10 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0xf83d095f1a2c1A79acA5Ba499a81d18023e8bFf0"
+    },
+    "mode" : 2
+  }#
+})# real loop 
+##
+_payload_11 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x6e49020Cc72cB9CDB4647dbA3f62Fbb7b4Ae6080"
+    },
+    "mode" : 2
+  }# double init unable hook
+})
+_payload_12 = json.dumps({
+  "data": {
+    "Poolkey": {
+		"currency0": "0x6aD83000194DFCf9a0869091B2Ea7D121033163E",
+		"currency1": "0xe61398b1Cb0FBED8268808A983Ad71ECFE2e1Ee9",
+		"fee": 0,
+		"tickSpacing": 60,
+		"hooks": "0x15F3F147eB0278b46363529083751363Be248c00"
+    },
+    "mode" : 2
+  }#proxy hook
+})
 print("double-init hook")
-url = "http://localhost:8000/api/tasks"
-res = requests.post(url, headers = headers, data = _payload_9)
-print(res.text)
-time.sleep(2)
+port = 8000
+host = "http://localhost:{}/api".format(port)
+tasks = "/tasks"
+noti = "/noti/{}/{}/{}/"
+result = "/result/{}"
 
+res = requests.post(host+tasks, headers = headers, data = _payload_12)
+t = ["minimum", "time", "hookcmp", "price", "chkPM", "timestep", "doubleInit", "proxy"]
+print(res.text)
+d = json.loads(res.text)['info']#['tasks']
+print("timehash : {}".format(d["timeHash"]))
+print("hooks : {}".format(d["hooks"]))
+print("{}{}".format(host, noti.format(d["timeHash"], d["hooks"], 2, 0)))
+print("{}{}".format(host, noti.format(d["timeHash"], d["hooks"], 2, 1)))
+print("{}{}".format(host, noti.format(d["timeHash"], d["hooks"], 2, 2)))
+for i in range(len(d['tasks'])):
+  print("=======================")
+  print("test : {}".format(t[i]))
+  print("{}{}".format(host, result.format(d['tasks'][i]['id'] ) ) )
+  print("=======================")
 

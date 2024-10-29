@@ -69,7 +69,7 @@ def dynamic(timeHash, rpc, poolkey):
     response = {}
     response["analysisResult"] = analysisResult
     
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     return response
 
@@ -78,11 +78,11 @@ def dynamic_minimum(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/MinimumTest.t.sol --rpc-url {} -vvv".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/MinimumTest.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
 
     res = minimumTestParse(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -96,10 +96,10 @@ def dynamic_timeBasedMinimumTest(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/time_std_PoolManager.t.sol  --rpc-url {} -vvv".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/time_std_PoolManager.t.sol  --fork-url {} -vvv".format(_exportPath,rpc)
     res = timeBasedMinimumTestParse(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -113,11 +113,11 @@ def dynamic_hookCompare(timeHash, rpc, poolkey, idx):
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
 
-    cmd = '{} forge test --match-path test/inputPoolkey/hookNoHookCompare.t.sol --rpc-url {} -vv | grep using'.format(_exportPath,rpc)
+    cmd = '{} forge test --match-path test/inputPoolkey/hookNoHookCompare.t.sol --fork-url {} -vv | grep using'.format(_exportPath,rpc)
 
     res = hookCompareParse(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -130,10 +130,10 @@ def dynamic_priceCheck(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = '{} forge test --match-path test/inputPoolkey/returnDelta.t.sol --rpc-url {} -vv | grep -Ei "Amount[0-1]+ delta:|-for-expected-current-|-for-expected-amount0"'.format(_exportPath,rpc)
+    cmd = '{} forge test --match-path test/inputPoolkey/returnDelta.t.sol --fork-url {} -vv | grep -Ei "Amount[0-1]+ delta:|-for-expected-current-|-for-expected-amount0"'.format(_exportPath,rpc)
     res = getPriceUsingPyth(rpc, poolkey["currency0"], poolkey["currency1"], testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -147,11 +147,11 @@ def dynamic_OnlyByPoolManager(timeHash, rpc, poolkey, idx):
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
 
-    cmd = "{} forge test --match-path test/inputPoolkey/check_onlyByPoolManager.t.sol --rpc-url {}".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/check_onlyByPoolManager.t.sol --fork-url {}".format(_exportPath,rpc)
 
     res = getChkOnlyByPoolManager(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -164,11 +164,11 @@ def dynamic_timeTestUsingStep(timeHash, rpc, poolkey, idx):
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
 
-    cmd = "{} forge test --match-path test/inputPoolkey/time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/time_minimum_step.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
 
     res = timeTestUsingStep(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -180,10 +180,10 @@ def dynamic_doubleInit(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/check_doubleInit.t.sol --rpc-url {} -vv".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/check_doubleInit.t.sol --fork-url {} -vv".format(_exportPath,rpc)
     res = doubleInitParse(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
@@ -195,10 +195,10 @@ def dynamic_upgradable(timeHash, rpc, poolkey, idx):
     response = {}
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/check_upgradable.t.sol --rpc-url {}".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/check_upgradable.t.sol --fork-url {}".format(_exportPath,rpc)
     res = upgradableParse(testRun(cmd))
     response["timeHash"] = timeHash
-    response["poolkey"] = poolkey
+    response["poolKey"] = poolkey
     response["mode"] = 2
     response["result"] = res
     response["idx"] = idx
