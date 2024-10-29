@@ -6,10 +6,87 @@ def hookCompareParse(result):
     result = result.stdout.split("\n")
     ret = {}
     ret["name"] = "hook-NoHook-Compare"
+    ret["PASS"] = 0
+    ret["FAIL"] = 0
     ret["msg"] = result
-    for i in range(len(result)-1):
-        tmp = result[i].split(" :  ")
-        ret[tmp[0].replace(" ","").replace("-using", "")] = (tmp[1].replace(" ",""))
+    ret["gasPrice"] = -1
+    hook = {
+        "add" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "remove" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "donate" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "swap":{
+            "gas": -1,
+            "totalGas" : -1,
+            "priceData" : {
+                "lpFee" : -1,
+                "protocolFee" : -1
+            }
+        }
+    }
+    noHook = {
+        "add" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "remove" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "donate" : {
+            "gas": -1,
+            "totalGas" : -1
+        },
+        "swap":{
+            "gas": -1,
+            "totalGas" : -1,
+            "priceData" : {
+                "lpFee" : -1,
+                "protocolFee" : -1
+            }
+        }
+    }
+    ret["hook"] = hook
+    ret["noHook"] = noHook
+    ret["len"] = len(result)
+    if(len(result) != 35):
+        ret["FAIL"] = 1
+        return ret
+    try:
+        for i in range(len(result)-1):
+            tmp = result[i].split(" :  ")
+            key = tmp[0].replace(" ","").replace("-using", "")
+            value = tmp[1].replace(" ","")
+            if("-gasPrice" in key):
+                ret["gasPrice"] = value
+            else:
+                if (not "amount" in key):
+                    sp = key.split("-")
+                    if(sp[0] == "no"):
+                        if(sp[3] == "protocolFee" or sp[3] == "lpFee" or sp[3] == "tokenPrice"):
+                            noHook[str(sp[2]).lower()]["priceData"][sp[3]] = value
+                        else:
+                            noHook[str(sp[2]).lower()][sp[3]] = value
+                    elif(sp[0] == "hook"):
+                        if(sp[2] == "protocolFee" or sp[2] == "lpFee" or sp[2] == "tokenPrice"):
+                            hook[str(sp[1]).lower()]["priceData"][sp[2]] = value
+                        else:
+                            hook[str(sp[1]).lower()][sp[2]] = value
+
+            # ret[key] = value
+        ret["hook"] = hook
+        ret["noHook"] = noHook
+        ret["PASS"] = 1
+    except:
+        ret["FAIL"] = 1
     return ret
 
 def foundryTestParse(result):
@@ -20,10 +97,12 @@ def foundryTestParse(result):
     f = 0
     passed = re.findall(r'^\[PASS\].*', result, re.MULTILINE)
     failed = re.findall(r'^\[FAIL:.*', result, re.MULTILINE)
-    
+    failList = []
     tmp = passed + failed
     for i in range(len(tmp)):
         retTmp = {}
+        retTmp["name"] = tmp[i].split("] ")[1].split(" ")[0]
+        retTmp["msg"] = tmp[i]
         if("[PASS" in tmp[i]): #[PASS
             retTmp["status"] = "PASS"
             retTmp["statusCode"] = 1
@@ -31,11 +110,11 @@ def foundryTestParse(result):
         if("[FAIL:" in tmp[i]):
             retTmp["status"] = "FAIL"
             retTmp["statusCode"] = 0
+            failList.append(retTmp)
             f += 1
-        retTmp["name"] = tmp[i].split("] ")[1].split(" ")[0]
-        retTmp["msg"] = tmp[i]
         ret.append(retTmp)
     realRet["testList"] = ret
+    realRet["failList"] = failList
     realRet["PASS"] = p
     realRet["FAIL"] = f
     return realRet
@@ -70,10 +149,16 @@ def minimumTestParse(result):
             try:
                 realRet["testList"][i]["description"] = msgs[i]
                 realRet["testList"][i]["trace"] = traces[failCnt]
+
+                realRet["failList"][failCnt]["description"] = msgs[i]
+                realRet["failList"][failCnt]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
                 if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
                     realRet["testList"][i]["OOG"] = 1
+                    realRet["failList"][failCnt]["OOG"] = 1
                 else:
                     realRet["testList"][i]["OOG"] = 0
+                    realRet["failList"][failCnt]["OOG"] = 0
                 failCnt += 1
             except:
                 realRet["testList"][i]["description"] = "msg"                
@@ -103,11 +188,13 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
     sys.path.append(engine_path)
     import getOffchainPrice
     import getSwapPrice
-
-    token0_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token0_address).strip()
-    token1_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token1_address).strip()
-    
-    price = getOffchainPrice.fetch_token_price(token0_symbol, token1_symbol)
+    try:
+        token0_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token0_address).strip()
+        token1_symbol = getOffchainPrice.get_token_symbol_from_rpc(rpc_url, token1_address).strip()
+        
+        price = getOffchainPrice.fetch_token_price(token0_symbol, token1_symbol)
+    except:
+        price = -1
     namelist = [
         "addLiquidity6909-","addLiquidity-",
         "Donate-",
@@ -171,6 +258,14 @@ def getChkOnlyByPoolManager(result):
                 realRet["testList"][i]["description"] = realRet["testList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
         except:
             realRet["testList"][i]["description"] = realRet["testList"][i]["msg"]
+
+    for i in range(len(realRet["failList"])):
+        try:
+            if(realRet["failList"][i]["status"] == "FAIL"):
+                realRet["failList"][i]["description"] = realRet["failList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
+                realRet["failList"][i]["impact"] = "moderate"
+        except:
+            realRet["failList"][i]["description"] = realRet["failList"][i]["msg"]
     return realRet
 
 
@@ -205,10 +300,13 @@ def doubleInitParse(result):
     response = {}
     log_data = result.stdout.replace("  ","")
     response["name"] = "double-Initialize-Test"
+    response["PASS"] = 0
+    response["FAIL"] = 0
     # 정규식을 이용해 slot-write-N, prev_value, old_value, new_value 매칭
     pattern = re.compile(r'slot-write-(\d+)\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{64})\n(0x[0-9a-fA-F]{40})\n(0x[0-9a-fA-F]{40})\n')
     # defaultdict로 slot 데이터 저장
     slot_data = [[],[]]
+    failList = []
 
     # 정규식으로 매칭된 데이터 추출
     for match in pattern.finditer(log_data):
@@ -228,7 +326,17 @@ def doubleInitParse(result):
         common_slots = set1 & set2  # 중복된 slot 값 찾기
         if common_slots:
             response["status"] = 1
+            response["FAIL"] = 1
+            fTmp = {
+                "name" : "double_Initialize",
+                "impact" : "major",
+                "status" : "FAIL",
+                "statusCode" : 1,
+                "description" : "double initialize detect. storage write detection in poolmanager.initialize"
+            }
+            traceStr = "case contract[slot] : prev -> new\n"
             for slot, contract in common_slots:
+                template = "{} {}[{}] | {} -> {}\n"
                 tmp = {"k1" : {}, "k2" : {}}
                 f = {"k1":0, "k2": 0}
                 for entry in slot_data[0]:
@@ -246,13 +354,21 @@ def doubleInitParse(result):
                         #tmp["k2"]["contract"] = entry["contract"]
                         f["k2"] = 1
                 if(f["k1"] == 1 and f["k2"] == 1):
+                    traceStr += template.format(0, contract, slot, f["k1"]["prev_value"], f["k1"]["new_value"])
+                    traceStr += template.format(1, contract, slot, f["k2"]["prev_value"], f["k2"]["new_value"])
                     tmp["slot"] = slot
                     tmp["contract"] = contract
+
                     ret.append(tmp)
+            fTmp["trace"] = traceStr
+            failList.append(fTmp)
+                    
         else:
             response["status"] = 0
+            response["PASS"] = 1
     else:
         response["status"] = -1
+        response["PASS"] = 1
         
     response["data"] = ret
     return response
@@ -260,4 +376,9 @@ def doubleInitParse(result):
 def upgradableParse(result):
     realRet = foundryTestParse(result)
     realRet["name"] = "Proxy-Test"
+    for i in range(len(realRet["failList"])):
+        realRet["failList"][i]["description"] = "proxy upgradable detect."
+        realRet["failList"][i]["impact"] = "critical"
+        realRet["failList"][i]["trace"] = "this contract is upgradable"
+
     return realRet
