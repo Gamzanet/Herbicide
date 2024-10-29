@@ -1,6 +1,69 @@
 from task.config import app
 from celery.result import AsyncResult, GroupResult
+def settingData(tmp):
+    ret = {}
+    reParse = {
+        "with_6909" : {},
+        "with_20" : {}
+    }
+    #ret["t"] = tmp
+    #print(tmp["result"]["data"].items())
+    reParse["with_20"]["swap"] = []
+    reParse["with_6909"]["swap"] = []
+    ret["name"] = tmp["result"]["name"]
+    ret["mode"] = tmp["mode"]
+    ret["idx"] = tmp["idx"]
+    ret["mode"] = tmp["idx"]
+    ret["time"] = tmp["time"]
+    ret["poolKey"] = tmp["poolKey"]
+    for i, j in tmp["result"]["data"].items():
+        if "6909" in i:
+            if "addLiquidity" in i:
+                reParse["with_6909"]["addLiquidity"] = j
+            if "removeLiquidity" in i:
+                reParse["with_6909"]["removeLiquidity"] = j
+            if "SWAP" in i:
+                j["is_burn"] = False
+                j["is_exactIn"] = False                    
+                if "exactIn" in i:
+                    j["is_exactIn"] = True
+                if "Burn" in i:
+                    j["is_burn"] = True
 
+                reParse["with_6909"]["swap"].append(j)
+        else:
+            if "addLiquidity" in i:
+                reParse["with_20"]["addLiquidity"] = j
+            if "removeLiquidity" in i:
+                reParse["with_20"]["removeLiquidity"] = j
+            if "Donate" in i:
+                reParse["with_20"]["donate"] = j
+            if "SWAP" in i:
+                j["is_burn"] = False
+                j["is_exactIn"] = False                    
+                if "exactIn" in i:
+                    j["is_exactIn"] = True
+                if "Burn" in i:
+                    j["is_burn"] = True
+                print("========")
+                print(i)
+                print(j)
+                reParse["with_20"]["swap"].append(j)
+            
+                #reParse["with_20"]["swap"].append()
+                #   is_6909: boolean;
+                #     is_burn: boolean;
+                #     is_exactIn: boolean;
+                
+
+    ret["data"] = reParse
+    #ret["data"] = tmp["result"]
+    #print(tmp["result"])
+    ret["price"] = tmp["result"]["price"]
+
+    
+
+    return ret
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
     try:
@@ -11,8 +74,12 @@ def getTask(task_id):
         elif result.state == "FAILURE":
             return {"task_id": task_id, "status": "Failure"}
         elif result.state == "SUCCESS":
-            print(f"Task result: {result.result}")
-            return {"task_id": task_id, "status": "Success", "result": result.result}
+            ret = result.result
+            if(ret["idx"] == 3):
+                ret = settingData(ret)
+                print("this")
+            #print(f"Task result: {result.result}")
+            return {"task_id": task_id, "status": "Success", "result": ret}
         else:
             return {"task_id": task_id, "status": result.state}
     except:

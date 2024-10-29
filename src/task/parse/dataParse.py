@@ -166,6 +166,9 @@ def minimumTestParse(result):
     return realRet
 
 def timeBasedMinimumTestParse(result):
+    msgs = [
+
+    ]
     traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
     realRet = foundryTestParse(result)
     realRet["name"] = "Time-Based-Minimum_Test"
@@ -175,9 +178,13 @@ def timeBasedMinimumTestParse(result):
         if(realRet["testList"][i]["status"] == "FAIL"):
             try:
                 realRet["testList"][i]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
+                d = realRet["testList"][i]["name"].replace("test_initialize_atSpecificTime","").replace("(uint256,uint256)","")
+                realRet["failList"][failCnt]["description"] = "liquidity pool locking at {}".format(d)
                 failCnt += 1
             except:            
                 realRet["testList"][i]["trace"] = "trace not found"      
+    
     return realRet
 
 def getPriceUsingPyth(rpc_url, token0_address, token1_address, result): 
@@ -263,7 +270,7 @@ def getChkOnlyByPoolManager(result):
         try:
             if(realRet["failList"][i]["status"] == "FAIL"):
                 realRet["failList"][i]["description"] = realRet["failList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
-                realRet["failList"][i]["impact"] = "moderate"
+                realRet["failList"][i]["impact"] = "High"
         except:
             realRet["failList"][i]["description"] = realRet["failList"][i]["msg"]
     return realRet
@@ -354,15 +361,15 @@ def doubleInitParse(result):
                         #tmp["k2"]["contract"] = entry["contract"]
                         f["k2"] = 1
                 if(f["k1"] == 1 and f["k2"] == 1):
-                    traceStr += template.format(0, contract, slot, f["k1"]["prev_value"], f["k1"]["new_value"])
-                    traceStr += template.format(1, contract, slot, f["k2"]["prev_value"], f["k2"]["new_value"])
+                    traceStr += template.format("0", (contract), slot, (tmp["k1"]["prev_value"]), (tmp["k1"]["new_value"]))
+                    traceStr += template.format("1", (contract), slot, (tmp["k2"]["prev_value"]), (tmp["k2"]["new_value"]))
                     tmp["slot"] = slot
                     tmp["contract"] = contract
 
                     ret.append(tmp)
             fTmp["trace"] = traceStr
             failList.append(fTmp)
-                    
+            response["failList"] = failList
         else:
             response["status"] = 0
             response["PASS"] = 1
