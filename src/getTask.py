@@ -76,9 +76,9 @@ def getTask(task_id):
             return {"task_id": task_id, "status": "Failure"}
         elif result.state == "SUCCESS":
             ret = result.result
-            print(ret)
             if(ret["mode"] == 3 ):
                 return {"task_id": task_id, "status": "Success", "result": ret}
+
             if(ret["idx"] == 3):
                 ret = settingData(ret)
                 print("this")
