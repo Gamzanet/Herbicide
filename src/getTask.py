@@ -67,6 +67,7 @@ def settingData(tmp):
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
     try:
+        print("qweqweq")
         print(f"Task Status: {result.status}")
         if result.state == "PENDING":
             print("pending....")
@@ -75,6 +76,9 @@ def getTask(task_id):
             return {"task_id": task_id, "status": "Failure"}
         elif result.state == "SUCCESS":
             ret = result.result
+            print(ret)
+            if(ret["mode"] == 3 ):
+              return {"task_id": task_id, "status": "Success", "result": ret}
             if(ret["idx"] == 3):
                 ret = settingData(ret)
                 print("this")
@@ -82,7 +86,8 @@ def getTask(task_id):
             return {"task_id": task_id, "status": "Success", "result": ret}
         else:
             return {"task_id": task_id, "status": result.state}
-    except:
+    except Exception as f:
+        print(f)
         return{"task_id": task_id, "status":"result not found"}
     
 def getGroupTask(group_id):
