@@ -4,9 +4,9 @@ from celery import group
 def staticTaskMake(timeHash, hook):
     result = static.delay(timeHash, hook)
     res = {
-        "status": 0, 
-        "id": result.id,  
-        "detail": result.status  
+        "hooks" : hook,
+        "timeHash" : timeHash,
+        "tasks" : [{"id": result.id, "stat" : result.status}]
     }
     print(f"Task Created: {res}")
     return res
