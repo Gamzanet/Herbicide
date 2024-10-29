@@ -1,64 +1,100 @@
 import os
 import sys
-from pprint import pprint
-import subprocess
 
 
+def base_paths(x: str) -> str:
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), x))
 
-def staticRun(timeHash, hook):    
-    src = os.path.dirname(os.path.abspath(__file__))
-    engine_path = os.path.join(src, '..', '..', 'engine', 'gamza-static', 'lib')
-    print(engine_path)
-    sys.path.append(engine_path)
-    from utils.paths import rule_rel_path_by_name
-    from engine import layer_0
-    from etherscan.unichain import store_foundry_toml, store_remappings, store_all_dependencies, foundry_dir
-    from parser.layer_2 import get_variables
-    from parser.run_semgrep import get_semgrep_output           
-    
-    dirs = os.path.join(src, '..')
-    os.chdir("../../engine/gamza-static/")
-    
-    ret = {}   
-    # _address: str = "0x38EB8B22Df3Ae7fb21e92881151B365Df14ba967"  # Uniswap v4 PoolManager in unichain
-    #_address: str = "0x7d61d057dD982b8B0A05a5871C7d40f8b96dd040"  # Entropy First Initialized Hook in unichain
-    _address: str = hook
+# to run `python main.py` in root dir, add path of library to sys.path
+src = os.path.dirname(os.path.abspath(__file__))
 
+engine_path = os.path.join(src, '..', '..', 'engine', 'gamza-static', 'lib')
+sys.path.append(engine_path)
+engine_path = os.path.join(src, '..', '..', 'engine', 'gamza-static')
+sys.path.append(engine_path)
+project_root = base_paths("../../engine/gamza-static")
+origin = base_paths(".")
+
+
+import engine.foundry
+import engine.slither
+
+from utils.unichain import store_foundry_toml, store_remappings, store_all_dependencies
+from utils import foundry_dir
+
+from custom_rules import get_model_suite
+from layers.Aggregator import ThreatDetectionResult, ThreatModelBase, Aggregator
+from layers.dataclass.Components import SimpleDetectionLog
+
+
+def get_analysis_result_with_threats(code: str, models: list[ThreatModelBase]) -> ThreatDetectionResult:
+    if not models:
+        raise ValueError("No models provided")
+    _res: ThreatDetectionResult = ThreatDetectionResult(
+        info=Aggregator().aggregate(code),
+        threats=[]
+    )
+    for model in models:
+        detection_log = model.run(code)
+        if detection_log and len(detection_log.scopes) > 0:
+            _res.threats.append(SimpleDetectionLog.from_log(detection_log))
+    return _res
+
+
+def staticRun(timeHash, hook):
+    os.chdir(engine_path)
+    _address = hook
     _paths = store_all_dependencies(_address)
     store_remappings(_address)
     store_foundry_toml()
 
-    _diff = layer_0.format_code(foundry_dir)  # "code/unichain" directory
+    _diff = engine.foundry.format_code(foundry_dir)  # "code/unichain" directory
     # print(_diff)
 
     # linting the target contract recursively lints all dependencies
-    _res: list[str] = layer_0.lint_code(_paths[0])
+    _res: tuple[str, str] = engine.slither.lint_code(_paths[0])
     # print(res)
 
-    # to run semgrep rules,
-    # path needs to start with "code"
-    _target_path = os.path.join(foundry_dir, _paths[0])
+    from layers.Loader import Loader
+    # code in "code/*" dir can simply be read by Loader
+    file_name = "TakeProfitHook"
+    code = Loader().read_code(f"{file_name}.sol")
+    assert len(code) > 0
+    print(_paths[0].split("/")[1])  
+    # can also read code from absolute path
 
-    _output_l1: list = get_semgrep_output(
-        rule_rel_path_by_name("misconfigured-Hook"),
-        _target_path,
-        False
-    )
+    file_path = os.path.join(engine_path, "code", "{}.sol".format(file_name))
+    print(file_path)
+    code = Loader().read_code(file_path)
+    assert len(code) > 0
+
+    from layers.Aggregator import Aggregator
+    aggregator = Aggregator()
+    res = aggregator.aggregate(code)
+
+    # can store the result as json using attr
+    from attr import asdict
+    import json
+    json.dump(asdict(res, recurse=True), open(f"out/{file_name}.json", "w"), indent=4)
+
+    _path = Loader().read_code(f"{file_name}.sol")
+    res = get_analysis_result_with_threats(_path, get_model_suite())
+    print("this")
+    print(res)
+    assert type(res) == ThreatDetectionResult
+    outfile = "out/{}_{}_{}.json".format(123,123,file_name)
+    print(outfile)
+    with open(outfile, "w") as f:
+        json.dump(asdict(res, recurse=True), f, indent=4)
+    print("end")
+    os.chdir(origin)
+    print("asd")
+
+    m = {}
+    m["timeHash"] = timeHash
+    m["hooks"] = hook
+    m["result"] = asdict(res, recurse=True)
+    m["mode"] = 3
 
 
-    _output_l2: list = get_semgrep_output(
-        rule_rel_path_by_name("info-variable"),
-        _target_path,
-        False
-    )
-
-    ret["misconfigured-Hook"] = _output_l1
-    ret["info-variable"] = _output_l2
-    ret["slither_pass"] = _res[0].split("\n")
-    ret["slither_fail"] = _res[1].split("\n")
-    _output_d: dict = get_variables(_target_path)
-    ret["output"] = _output_d
-
-    ret["__path"] = _paths
-    os.chdir(dirs)
-    return ret
+    return m
