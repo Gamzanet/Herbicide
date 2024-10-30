@@ -1,0 +1,324 @@
+{
+    "contract": "TakeProfitsHook",
+    "success": true,
+    "error": null,
+    "data": [
+        {
+            "printer": "require",
+            "fields_names": [
+                "Function",
+                "require or assert"
+            ],
+            "result": [
+                {
+                    "Function": "constructor",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "supportsInterface",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "uri",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "balanceOf",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_update",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_updateWithAcceptanceCheck",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_safeTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_safeBatchTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_setURI",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_mint",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_mintBatch",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_burn",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_burnBatch",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_setApprovalForAll",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_doSafeTransferAcceptanceCheck",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_doSafeBatchTransferAcceptanceCheck",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_asSingletonArrays",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "uri",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "balanceOf",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "supportsInterface",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "supportsInterface",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_msgSender",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_msgData",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_contextSuffixLength",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "constructor",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "validateHookAddress",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterInitialize",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeSwap",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterSwap",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeDonate",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterDonate",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "constructor",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "unlockCallback",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "unlockCallback",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "constructor",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterInitialize",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeSwap",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterSwap",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "beforeDonate",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterDonate",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "constructor",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterInitialize",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "afterSwap",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "placeOrder",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "cancelOrder",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "redeem",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "tryExecutingOrders",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "executeOrder",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "swapAndSettleBalances",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_settle",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "_take",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "getPositionId",
+                    "require or assert": ""
+                },
+                {
+                    "Function": "getLowerUsableTick",
+                    "require or assert": ""
+                }
+            ]
+        }
+    ]
+}

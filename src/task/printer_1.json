@@ -1,0 +1,330 @@
+{
+    "contract": "TakeProfitsHook",
+    "success": true,
+    "error": null,
+    "data": [
+        {
+            "printer": "modifiers",
+            "fields_names": [
+                "Function",
+                "Modifiers"
+            ],
+            "result": [
+                {
+                    "Function": "constructor",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "supportsInterface",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "uri",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "balanceOf",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_update",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_updateWithAcceptanceCheck",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_safeTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_safeBatchTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_setURI",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_mint",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_mintBatch",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_burn",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_burnBatch",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_setApprovalForAll",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_doSafeTransferAcceptanceCheck",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_doSafeBatchTransferAcceptanceCheck",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_asSingletonArrays",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "uri",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "balanceOf",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "supportsInterface",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "supportsInterface",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_msgSender",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_msgData",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_contextSuffixLength",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "constructor",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "validateHookAddress",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterInitialize",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeSwap",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterSwap",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeDonate",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterDonate",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "constructor",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "unlockCallback",
+                    "Modifiers": [
+                        "onlyByPoolManager"
+                    ]
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "unlockCallback",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "constructor",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterInitialize",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeSwap",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterSwap",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "beforeDonate",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterDonate",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "constructor",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "afterInitialize",
+                    "Modifiers": [
+                        "onlyByPoolManager"
+                    ]
+                },
+                {
+                    "Function": "afterSwap",
+                    "Modifiers": [
+                        "onlyByPoolManager"
+                    ]
+                },
+                {
+                    "Function": "placeOrder",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "cancelOrder",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "redeem",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "tryExecutingOrders",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "executeOrder",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "swapAndSettleBalances",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_settle",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "_take",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "getPositionId",
+                    "Modifiers": []
+                },
+                {
+                    "Function": "getLowerUsableTick",
+                    "Modifiers": []
+                }
+            ]
+        }
+    ]
+}

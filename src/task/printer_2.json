@@ -1,0 +1,402 @@
+{
+    "contract": "TakeProfitsHook",
+    "success": true,
+    "error": null,
+    "data": [
+        {
+            "printer": "vars-and-auth",
+            "fields_names": [
+                "Function",
+                "State variables written",
+                "Conditions on msg.sender"
+            ],
+            "result": [
+                {
+                    "Function": "constructor",
+                    "State variables written": "['_uri']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "supportsInterface",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "uri",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "balanceOf",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "State variables written": "['_operatorApprovals']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_update",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_updateWithAcceptanceCheck",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_safeTransferFrom",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_safeBatchTransferFrom",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_setURI",
+                    "State variables written": "['_uri']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_mint",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_mintBatch",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_burn",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_burnBatch",
+                    "State variables written": "['_balances']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_setApprovalForAll",
+                    "State variables written": "['_operatorApprovals']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_doSafeTransferAcceptanceCheck",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_doSafeBatchTransferAcceptanceCheck",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_asSingletonArrays",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "uri",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "balanceOf",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "balanceOfBatch",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "setApprovalForAll",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "isApprovedForAll",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "safeTransferFrom",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "safeBatchTransferFrom",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "supportsInterface",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "supportsInterface",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_msgSender",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_msgData",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_contextSuffixLength",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "constructor",
+                    "State variables written": "['poolManager']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "validateHookAddress",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterInitialize",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeSwap",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterSwap",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeDonate",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterDonate",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "constructor",
+                    "State variables written": "['poolManager']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "unlockCallback",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "['msg.sender != address(poolManager)', 'msg.sender != address(poolManager)']"
+                },
+                {
+                    "Function": "_unlockCallback",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "unlockCallback",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "constructor",
+                    "State variables written": "['poolManager']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeInitialize",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterInitialize",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeAddLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterAddLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeRemoveLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterRemoveLiquidity",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeSwap",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterSwap",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "beforeDonate",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterDonate",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "constructor",
+                    "State variables written": "['_uri', 'poolManager']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "getHookPermissions",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "afterInitialize",
+                    "State variables written": "['lastTicks']",
+                    "Conditions on msg.sender": "['msg.sender != address(poolManager)', 'msg.sender != address(poolManager)']"
+                },
+                {
+                    "Function": "afterSwap",
+                    "State variables written": "['claimableOutputTokens', 'lastTicks', 'pendingOrders']",
+                    "Conditions on msg.sender": "['msg.sender != address(poolManager)', 'msg.sender != address(poolManager)']"
+                },
+                {
+                    "Function": "placeOrder",
+                    "State variables written": "['_balances', 'claimTokensSupply', 'pendingOrders']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "cancelOrder",
+                    "State variables written": "['_balances', 'claimTokensSupply', 'pendingOrders']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "redeem",
+                    "State variables written": "['_balances', 'claimTokensSupply', 'claimableOutputTokens']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "tryExecutingOrders",
+                    "State variables written": "['claimableOutputTokens', 'pendingOrders']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "executeOrder",
+                    "State variables written": "['claimableOutputTokens', 'pendingOrders']",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "swapAndSettleBalances",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_settle",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "_take",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "getPositionId",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                },
+                {
+                    "Function": "getLowerUsableTick",
+                    "State variables written": "[]",
+                    "Conditions on msg.sender": "[]"
+                }
+            ]
+        }
+    ]
+}

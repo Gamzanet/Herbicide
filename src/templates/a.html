@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Clock with SSE</title>
+</head>
+<body>
+    <h1>Current Time</h1>
+    <div id="time"></div>
+
+    <button id="stop">Stop Receiving Updates</button>
+
+    <script>
+        // EventSource 객체 생성
+        const eventSource = new EventSource("http://localhost:8000/time");
+
+        // 서버로부터 메시지를 수신할 때마다 호출되는 이벤트 리스너
+        eventSource.onmessage = function(event) {
+            document.getElementById("time").innerText = event.data;
+        };
+
+        // 연결이 열릴 때 호출되는 이벤트 리스너
+        eventSource.onopen = function() {
+            console.log("Connection to server opened.");
+        };
+
+        // 오류가 발생할 때 호출되는 이벤트 리스너
+        eventSource.onerror = function() {
+            console.log("An error occurred while receiving updates.");
+        };
+
+        // "Stop" 버튼 클릭 시 연결을 끊음
+        document.getElementById("stop").addEventListener("click", function() {
+            eventSource.close();
+            console.log("Connection to server closed.");
+        });
+    </script>
+</body>
+</html>
