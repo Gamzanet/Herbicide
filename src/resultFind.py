@@ -38,7 +38,7 @@ def _findTest(timeHash, hooks,  mode, idx):
         try:
             tmp = json.loads(res)
             for i in range(len(idx)):
-                if(tmp["result"]["poolkey"]["hooks"] == hooks and tmp["result"]["mode"] == mode and tmp["result"]["timeHash"] == timeHash and tmp["result"]["idx"] == idx[i]):
+                if(tmp["result"]["poolKey"]["hooks"] == hooks and tmp["result"]["mode"] == mode and tmp["result"]["timeHash"] == timeHash and tmp["result"]["idx"] == idx[i]):
                     ret["task_id"] = tmp["task_id"]
                     ret["idx"] = tmp["result"]["idx"]
                     utc_datetime = datetime.fromisoformat(tmp["date_done"])
