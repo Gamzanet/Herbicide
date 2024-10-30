@@ -5,7 +5,6 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
-from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake
 from getTask import getTask
 #from analysisSetting import setStaticAnalysis#, setAddressDynamicAnalysis, setOpDynamicAnalysis
 import analysisSetting
@@ -30,6 +29,7 @@ def send_result(task_id: str):
 @app.post("/api/tasks")
 async def recv_result(request: Request):
     
+    from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake
     body = await request.body()
     print(body)
     data = validation(body)
