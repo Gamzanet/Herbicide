@@ -1,5 +1,5 @@
 from typing import Union
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,6 +16,14 @@ from resultFind import findTest, _findTest
 
 
 app = FastAPI()
+origins = origins = ["*"]                                                                                                                                                                                                  
+app.add_middleware(                                                                               
+    CORSMiddleware,                                                                             
+    allow_origins=origins,                                                                        
+    allow_credentials=True,                                                                      
+    allow_methods=["*"],                                                                        
+    allow_headers=["*"],                                                                     
+)    
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
