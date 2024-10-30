@@ -13,7 +13,7 @@ def findTest(poolkey, mode):
         ret = {}
         try:
             tmp = json.loads(res)
-            if(tmp["result"]["poolkey"] == poolkey and tmp["result"]["mode"] == mode):
+            if(tmp["result"]["poolKey"] == poolkey and tmp["result"]["mode"] == mode):
                 print("find!")
                 # print(tmp)
                 ret["task_id"] = tmp["task_id"]
