@@ -25,7 +25,8 @@ def setDynamicAnalysis(timeHash, poolkey,deployer ):
         },
         "deployer": deployer
     }
-    engine_path = os.path.join("data","dynamic_{}_{}.json".format(timeHash,poolkey["hooks"]))#f"dynamic_{timeHash}.json")
-    print(engine_path)
+    src = os.path.dirname(os.path.abspath(__file__))
+    engine_path = os.path.join(src, "data","dynamic_{}_{}.json".format(timeHash,poolkey["hooks"]))
+    print("engine : {}".format(engine_path))
     with open(engine_path, "w") as f:
         json.dump(data, f)
