@@ -61,7 +61,7 @@ async def recv_result(request: Request):
         # print(body.get("source"))
         # print(dir(analysisSetting))
         # analysisSetting.setStaticAnalysis(timeHash, body.get("source")) # 현재상황 소스 안받는것을 가정으로, 10.21 소스 받을 수도 있음. 일단 냅두기\
-        task_info = staticTaskMake(timeHash, data["poolKey"]["hooks"])
+        task_info = staticTaskMake(timeHash, data["poolKey"])
         print("3")
 
     else:
@@ -138,7 +138,7 @@ async def event_stream(t,h, m, finder):
         print("c")
         print(current)
         print(new)
-        print(tests)
+        print(finder)
         for i in range(len(new)):
             print("send")
             yield "complate idx : {}, task-id : {}\n".format(new[i]["idx"], new[i]["task_id"])
@@ -160,7 +160,7 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
             # doubleInit, upgradable
             idx = [0, 1, 4, 5, 6, 7] 
     elif(mode == 3):
-        idx = []
+        idx = [0]
 
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
 @app.get("/a")

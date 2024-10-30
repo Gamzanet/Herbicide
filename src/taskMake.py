@@ -1,12 +1,12 @@
 
 from task.tasks import analysis, dynamic, static, dynamic_minimum, dynamic_timeBasedMinimumTest, dynamic_hookCompare, dynamic_priceCheck,dynamic_OnlyByPoolManager, dynamic_timeTestUsingStep, dynamic_doubleInit, dynamic_upgradable
 from celery import group
-def staticTaskMake(timeHash, hook):
-    result = static.delay(timeHash, hook)
+def staticTaskMake(timeHash, poolKey):
+    result = static.delay(timeHash, poolKey)
     res = {
-        "status": 0, 
-        "id": result.id,  
-        "detail": result.status  
+        "hooks" : poolKey["hooks"],
+        "timeHash" : timeHash,
+        "tasks" : [{"id": result.id, "stat" : result.status}]
     }
     print(f"Task Created: {res}")
     return res
