@@ -1,6 +1,7 @@
 import os
 import sys
-
+from .static_tmp.slither_detector import slither_detector_run
+from .static_tmp.slither_printer import slither_printer_run
 
 def base_paths(x: str) -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), x))
@@ -90,11 +91,14 @@ def staticRun(timeHash, hook):
     os.chdir(origin)
     print("asd")
 
-    m = {}
-    m["timeHash"] = timeHash
-    m["hooks"] = hook
-    m["result"] = asdict(res, recurse=True)
-    m["mode"] = 3
+    response = {}
+    response["timeHash"] = timeHash
+    response["hooks"] = hook
+    response["result"] = asdict(res, recurse=True)
+    response["slither"] = {}
+    response["slither"]["detector"] = slither_detector_run()
+    response["slither"]["printer"] = slither_printer_run(_paths[0].replace("src/","").replace(".sol",""))
+    response["mode"] = 3
 
 
-    return m
+    return response

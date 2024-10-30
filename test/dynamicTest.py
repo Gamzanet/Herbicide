@@ -293,7 +293,7 @@ tasks = "/tasks"
 noti = "/noti/{}/{}/{}/"
 result = "/result/{}"
 
-res = requests.post(host+tasks, headers = headers, data = _payload_12)
+res = requests.post(host+tasks, headers = headers, data = _payload_6)
 t = ["minimum", "time", "hookcmp", "price", "chkPM", "timestep", "doubleInit", "proxy"]
 print(res.text)
 d = json.loads(res.text)['info']#['tasks']
