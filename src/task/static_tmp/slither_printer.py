@@ -12,7 +12,7 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
         "error": None,
         "data": [
             {
-                "printer": f"{slither_test_name}",
+                "printer": "",
                 "fields_names": [],
                 "result": []
             }
@@ -20,19 +20,23 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
     }
     ####################################################################################################
     # Load the JSON data from the input file
-    input_file_path = f'./{slither_test_name}.json'
     output_file_path = f'./{json_output}.json'
 
     temp = f"{random.randint(0, 0xffffffff)}.json"
     print(temp)
-    ret = subprocess.run(["slither", code_location, "--print", f"{slither_test_name}" ,"--json", temp], stdout=subprocess.DEVNULL).returncode
+    ret = subprocess.run(["slither", code_location, "--print", f"{','.join(slither_test_name)}" ,"--json", temp], stdout=subprocess.DEVNULL).returncode
     print(ret)
-    print(["slither", code_location, "--print", f"{slither_test_name}" ,"--json", temp])
+    print(["slither", code_location, "--print", f"{','.join(slither_test_name)}" ,"--json", temp])
     with open(temp, 'r') as file:
         data = json.load(file)
 
 
     for printer in data["results"]["printers"]:
+        q = {
+                "printer": "",
+                "fields_names": [],
+                "result": []
+            }
         for element in printer["elements"]:
             if element["type"] == "pretty_table" and element["name"]["name"] == hook_contract:
                 rows = element["name"]["content"]["rows"]
@@ -42,8 +46,10 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
                     for i in range(len(fields_names)):
                         e = row[i]
                         p[fields_names[i]] = e
-                    hook_data["data"][0]["result"].append(p)
-                    hook_data["data"][0]["fields_names"] = fields_names
+                    q["printer"] = printer["printer"]
+                    q["result"].append(p)
+                    q["fields_names"] = fields_names
+        hook_data["data"].append(q)
 
     if hook_data["data"][0]["result"].__len__() == 0:
         hook_data["success"] = False
