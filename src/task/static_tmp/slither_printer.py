@@ -66,9 +66,7 @@ def slither_printer_run(contractName):
     printer_list = ["require", "modifiers", "vars-and-auth"]
     src = os.path.dirname(os.path.abspath(__file__))
     code_path = os.path.join(src, '..','..', '..', 'engine', 'gamza-static', 'code', 'unichain')
-    r  = {}
-    for i in  range(len(printer_list)):
-        r[printer_list[i]] = slither_printer(contractName, "{}".format( code_path ),printer_list[i], "printer_{}".format(i) )
+    r = slither_printer(contractName, "{}".format( code_path ),printer_list[i], "printer_{}".format(i) )
     return r
 
 # print(f"Parsed data saved to {output_file_path}")
