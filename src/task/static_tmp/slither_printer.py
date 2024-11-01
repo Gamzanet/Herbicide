@@ -33,7 +33,7 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
                 "result": []
             }
         for element in printer["elements"]:
-            if element["type"] == "pretty_table" and element["name"]["name"] == hook_contract:
+            if element["type"] == "pretty_table" and element["name"]["name"] == hook_contract.split("/")[-1]:
                 rows = element["name"]["content"]["rows"]
                 fields_names = element["name"]["content"]["fields_names"]
                 for row in rows:
