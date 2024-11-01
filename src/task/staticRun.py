@@ -45,6 +45,7 @@ def get_analysis_result_with_threats(code: str, models: list[ThreatModelBase]) -
 
 
 def staticRun(timeHash, hook):
+    shutil.rmtree("/app/engine/gamza-static/code/unichain", ignore_errors=True)
     os.chdir(engine_path)
     _address = hook
     contract_json = get_contract_json(_address)
@@ -108,5 +109,5 @@ def staticRun(timeHash, hook):
     response["mode"] = 3
 
 
-    shutil.rmtree("/app/engine/gamza-static/code/unichain")
+    
     return response

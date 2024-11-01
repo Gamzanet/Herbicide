@@ -15,7 +15,7 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
     }
     ####################################################################################################
     # Load the JSON data from the input file
-    output_file_path = f'./{json_output}.json'
+    output_file_path = f'/app/engine/gamza-static/code/unichain/{json_output}.json'
 
     temp = f"{random.randint(0, 0xffffffff)}.json"
     print(temp)
