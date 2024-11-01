@@ -13,11 +13,19 @@
 
     <script>
         // EventSource 객체 생성
-        const eventSource = new EventSource("http://localhost:8000/time");
+        let timeHash = "dd5a20103d05093f8328495a1f7f583ab7a46bb5c6544f66152455cc6c3336d6"
+        let hooks = '0xF20Ac4669fc2bbAC775B46875E22Ba851bF64AC0';
+        let url = `http://localhost:8000/api/noti/${timeHash}/${hooks}/2/2`;
+
+        
+        const eventSource = new EventSource(url);
 
         // 서버로부터 메시지를 수신할 때마다 호출되는 이벤트 리스너
         eventSource.onmessage = function(event) {
+            console.log("asd");
+            console.log(event.data);
             document.getElementById("time").innerText = event.data;
+
         };
 
         // 연결이 열릴 때 호출되는 이벤트 리스너

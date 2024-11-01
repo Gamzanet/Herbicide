@@ -24,10 +24,11 @@ app.add_middleware(
     allow_methods=["*"],                                                                        
     allow_headers=["*"],                                                                     
 )    
-templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/")
 def read_root(request: Request):
+    templates = Jinja2Templates(directory="templates")
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/api/result/{task_id}")
@@ -149,8 +150,9 @@ async def event_stream(t,h, m, finder):
         print(finder)
         for i in range(len(new)):
             print("send")
-            yield "complate idx : {}, task-id : {}\n".format(new[i]["idx"], new[i]["task_id"])
-        await asyncio.sleep(3)
+            t = "data: complate idx : {}, task-id : {}\n\n".format(new[i]["idx"], new[i]["task_id"])
+            yield t
+        await asyncio.sleep(1)
         if(len(current) >= len(finder)):
             return
         cnt += 1
@@ -173,4 +175,5 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
 @app.get("/a")
 def read_root(request: Request):
+    templates = Jinja2Templates(directory="templates")
     return templates.TemplateResponse("a.html", {"request": request})
