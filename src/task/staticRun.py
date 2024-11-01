@@ -1,5 +1,7 @@
 import os
 import sys
+import json
+import shutil
 from .static_tmp.slither_detector import slither_detector_run
 from .static_tmp.slither_printer import slither_printer_run
 
@@ -20,7 +22,7 @@ origin = base_paths(".")
 import engine.foundry
 import engine.slither
 
-from utils.unichain import store_foundry_toml, store_remappings, store_all_dependencies
+from utils.unichain import store_foundry_toml, store_remappings, store_all_dependencies, get_contract_json
 from utils import foundry_dir
 
 from custom_rules import get_model_suite
@@ -45,6 +47,7 @@ def get_analysis_result_with_threats(code: str, models: list[ThreatModelBase]) -
 def staticRun(timeHash, hook):
     os.chdir(engine_path)
     _address = hook
+    contract_json = get_contract_json(_address)
     _paths = store_all_dependencies(_address)
     store_remappings(_address)
     store_foundry_toml()
@@ -58,13 +61,16 @@ def staticRun(timeHash, hook):
 
     from layers.Loader import Loader
     # code in "code/*" dir can simply be read by Loader
-    file_name = "TakeProfitHook"
-    code = Loader().read_code(f"{file_name}.sol")
+    file_name = contract_json["name"]
+    tmp_path = contract_json["file_path"]
+    print(bytes(file_name, 'utf-8'))
+    code = Loader().read_code(f"/app/engine/gamza-static/code/unichain/{tmp_path}")
     assert len(code) > 0
     print(_paths[0].split("/")[1])  
     # can also read code from absolute path
 
-    file_path = os.path.join(engine_path, "code", "{}.sol".format(file_name))
+    # file_path = os.path.join(engine_path, "code", "{}.sol".format(file_name))
+    file_path = f"/app/engine/gamza-static/code/unichain/{tmp_path}"
     print(file_path)
     code = Loader().read_code(file_path)
     assert len(code) > 0
@@ -78,7 +84,8 @@ def staticRun(timeHash, hook):
     import json
     json.dump(asdict(res, recurse=True), open(f"out/{file_name}.json", "w"), indent=4)
 
-    _path = Loader().read_code(f"{file_name}.sol")
+    # _path = Loader().read_code(f"{file_name}.sol")
+    _path = Loader().read_code(f"/app/engine/gamza-static/code/unichain/{tmp_path}")
     res = get_analysis_result_with_threats(_path, get_model_suite())
     print("this")
     print(res)
@@ -101,4 +108,5 @@ def staticRun(timeHash, hook):
     response["mode"] = 3
 
 
+    shutil.rmtree("/app/engine/gamza-static/code/unichain")
     return response

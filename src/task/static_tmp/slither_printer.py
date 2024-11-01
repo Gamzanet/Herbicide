@@ -11,11 +11,6 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
         "success": True,
         "error": None,
         "data": [
-            {
-                "printer": "",
-                "fields_names": [],
-                "result": []
-            }
         ]
     }
     ####################################################################################################
@@ -51,7 +46,7 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
                     q["fields_names"] = fields_names
         hook_data["data"].append(q)
 
-    if hook_data["data"][0]["result"].__len__() == 0:
+    if hook_data["data"].__len__() == 0:
         hook_data["success"] = False
         hook_data["error"] = "Slither test failed to run"
 

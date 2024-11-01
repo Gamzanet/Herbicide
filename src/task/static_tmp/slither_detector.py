@@ -31,7 +31,7 @@ def slither_detector(slither_detector_name, project_location,json_output):
 
     temp = f"{random.randint(0, 0xffffffff)}.json"
     #../engine/gamza-static/code/unichain
-    ret = subprocess.run(["slither", project_location, "--detect", f"{slither_detector_name}" ,"--json", temp], stdout=subprocess.DEVNULL).returncode
+    ret = subprocess.run(["slither", project_location, "--detect", f"{','.join(slither_detector_name)}" ,"--json", temp], stdout=subprocess.DEVNULL).returncode
     print(["slither", project_location, "--detect", f"{slither_detector_name}" ,"--json", temp])
 
     with open(temp, 'r') as file:
@@ -50,7 +50,7 @@ def slither_detector(slither_detector_name, project_location,json_output):
             p["impact"] = detection["impact"]
             p["confidence"] = detection["confidence"]
             hook_data["data"].append(p)
-        if hook_data["data"][0]["check"].__len__() == 0:
+        if hook_data["data"].__len__() == 0:
             hook_data["success"] = False
             hook_data["error"] = "Slither test failed to run"
 
@@ -71,8 +71,7 @@ def slither_detector_run():
     ret = {}
     src = os.path.dirname(os.path.abspath(__file__))
     code_path = os.path.join(src,'..', '..', '..', 'engine', 'gamza-static', 'code', 'unichain')
-    for i in range(len(detectors)):
-        ret[detectors[i]] = slither_detector(detectors[i], code_path , "{}{}".format(i,detectors[i]))
+    ret = slither_detector(detectors, code_path , "slither_detector")
     return ret
 
 # print(f"Parsed data saved to {output_file_path}")
