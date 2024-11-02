@@ -4,7 +4,7 @@ import json
 import shutil
 from .static_tmp.slither_detector import slither_detector_run
 from .static_tmp.slither_printer import slither_printer_run
-
+import subprocess
 def base_paths(x: str) -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), x))
 
@@ -111,3 +111,65 @@ def staticRun(timeHash, hook):
 
     
     return response
+
+def semgrep_raw(src):
+    cmd = 'semgrep --config "p/smart-contracts" {} --emacs'.format(src)
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    return res
+def staticRunByCode(timeHash,codeHash, src):
+    from layers.Loader import Loader
+    from attr import asdict
+    response = {}
+    response["timeHash"] = timeHash
+    response["codeHash"] = codeHash
+    code = Loader().read_code(src)
+    assert len(code) > 0
+    print(src)
+    code = Loader().read_code(src)
+    assert len(code) > 0
+    from layers.Aggregator import Aggregator
+    aggregator = Aggregator()
+    res = aggregator.aggregate(code)
+    # can store the result as json using attr
+    from attr import asdict
+    import json
+
+    # _path = Loader().read_code(f"{file_name}.sol")
+    _path = Loader().read_code(src)
+    res = get_analysis_result_with_threats(_path, get_model_suite())
+    response["result"] = asdict(res, recurse=True)
+    from engine.run_semgrep import run_semgrep_one
+    semgrep_res = semgrep_raw(src)
+    response["semgrep"] = semgrep_res.stdout #run_semgrep_one("", src)#이름 비우면 에러남
+    response["mode"] = 4
+    return response
+
+'''
+[2024-11-03 03:02:03,334: ERROR/MainProcess] Task task.tasks.static_by_code[b163fe20-20ba-437a-bf71-fe6332565349] raised unexpected: KeyError('')
+Traceback (most recent call last):
+  File "/Users/sori/backend/api/lib/python3.12/site-packages/celery/app/trace.py", line 453, in trace_task
+    R = retval = fun(*args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/lib/python3.12/site-packages/celery/app/trace.py", line 736, in __protected_call__
+    return self.run(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/tasks.py", line 223, in static_by_code
+    tmp = staticRunByCode(timeHash, codeHash,src)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/staticRun.py", line 139, in staticRunByCode
+    response["semgrep"] = run_semgrep_one("", src)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 38, in run_semgrep_one
+    _msg_raw_schema = read_message_schema_by_rule_name(_rule_name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 13, in read_message_schema_by_rule_name
+    return read_rule_by_name(_rule_name)["message"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 18, in read_rule_by_name
+    with open(f"rules/{rule_rel_path_by_name(_rule_name)}", "r") as f:
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/utils/paths.py", line 18, in rule_rel_path_by_name
+    class_name = "info" if "info-" in rule_name else rules["class"][rule_name]
+                                                     ~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: ''
+'''

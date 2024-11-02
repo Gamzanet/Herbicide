@@ -30,6 +30,7 @@ def _findTest(timeHash, hooks,  mode, idx):
     r = redis.Redis(host='localhost', port=6379, db=0)
     all_keys = r.keys('*')
     print(all_keys)
+    print(hooks)
     retArr = []
     for key in all_keys:
         # print(key.decode('utf-8'))
@@ -37,8 +38,13 @@ def _findTest(timeHash, hooks,  mode, idx):
         ret = {}
         try:
             tmp = json.loads(res)
-            for i in range(len(idx)):
-                if(tmp["result"]["poolKey"]["hooks"] == hooks and tmp["result"]["mode"] == mode and tmp["result"]["timeHash"] == timeHash and tmp["result"]["idx"] == idx[i]):
+            for i in range(len(idx)):            
+                if(tmp["result"]["mode"] ==  4):
+                    if (tmp["result"]["timeHash"] == timeHash and tmp["result"]["codeHash"] == hooks and tmp["result"]["idx"] == idx[i]):# 파일 보낼때
+                        ret["task_id"] = tmp["task_id"]
+                        ret["idx"] = tmp["result"]["idx"]
+                        retArr.append(ret)
+                elif(tmp["result"]["poolKey"]["hooks"] == hooks and tmp["result"]["mode"] == mode and tmp["result"]["timeHash"] == timeHash and tmp["result"]["idx"] == idx[i]):
                     ret["task_id"] = tmp["task_id"]
                     ret["idx"] = tmp["result"]["idx"]
                     utc_datetime = datetime.fromisoformat(tmp["date_done"])
