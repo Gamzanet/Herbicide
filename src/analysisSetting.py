@@ -1,12 +1,16 @@
 #/bin/python
 import subprocess
 import os
+import hashlib
+
 import json
-def setStaticAnalysis(timeHash, source):
-    #file_path = os.path.expanduser(f"~/tmp/{12}")
-    file_path = os.path.expanduser(f"~/tmp/static_{timeHash}.sol")
+def setStaticAnalysis(timeHash, codeHash, source):
+    src = os.path.dirname(os.path.abspath(__file__))
+    
+    file_path = os.path.join(src, "data","static_{}_{}.sol".format(timeHash,codeHash))
     with open(file_path, "w") as f:
         f.write(source)
+    return file_path
     
 def setOpDynamicAnalysis(task_id, opcode):
     a = 1

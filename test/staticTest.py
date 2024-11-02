@@ -116,7 +116,10 @@ headers = {
     'Content-Type': 'application/json'
 }
 data = {
-	"source": contents
+	"data":{
+		"source": contents,
+		"mode" : 4
+	}
 }
 res = requests.post(url, headers = headers, data = json.dumps(data))
 print(res.text)

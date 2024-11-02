@@ -5,7 +5,7 @@ from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
 from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse, getChkOnlyByPoolManager, timeTestUsingStep, doubleInitParse, upgradableParse
-from .staticRun import staticRun
+from .staticRun import staticRun, staticRunByCode
 from .threadWork import threadRun, testRun
 # 작업 정의
 @app.task
@@ -213,5 +213,15 @@ def static(timeHash, poolKey):
     tmp = staticRun(timeHash, poolKey["hooks"])
     tmp["idx"] = 0
     tmp["poolKey"] = poolKey
+    
+    return tmp
+
+@app.task
+def static_by_code(timeHash,codeHash, src):
+
+    print(src)
+    tmp = staticRunByCode(timeHash, codeHash,src)
+    tmp["idx"] = 0
+    tmp["codeHash"] = codeHash
     
     return tmp

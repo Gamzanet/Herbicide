@@ -38,7 +38,7 @@ def send_result(task_id: str):
 @app.post("/api/tasks")
 async def recv_result(request: Request):
     
-    from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake
+    from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake, codeStaticTaskMake
     body = await request.body()
     print(body)
     data = validation(body)
@@ -50,7 +50,7 @@ async def recv_result(request: Request):
         }
     
     timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
-    testCache = findTest(data["poolKey"], data["mode"])
+    
 
     if( data["mode"] == 1 ): # 정적 동적
         #그룹을 만들기 # 병렬말고 직렬로 하도록?
@@ -59,6 +59,7 @@ async def recv_result(request: Request):
 
     elif( data["mode"] == 2 ): #동적만
         #동적 테스크 만들기
+        testCache = findTest(data["poolKey"], data["mode"])
         analysisSetting.setDynamicAnalysis(timeHash, data["poolKey"], data["deployer"] )
         task_info = dynamicTaskMake( timeHash, 
                                     __import__('os').environ.get('uni'), 
@@ -69,9 +70,17 @@ async def recv_result(request: Request):
         #정적 테스크 만들기
         # print(body.get("source"))
         # print(dir(analysisSetting))
-        # analysisSetting.setStaticAnalysis(timeHash, body.get("source")) # 현재상황 소스 안받는것을 가정으로, 10.21 소스 받을 수도 있음. 일단 냅두기\
+        testCache = findTest(data["poolKey"], data["mode"])
         task_info = staticTaskMake(timeHash, data["poolKey"])
         print("3")
+    elif (data["mode"] == 4): # 정적 코드만
+        codeHash = hashlib.sha256(str(data["source"]).encode()).hexdigest()
+        file_path = analysisSetting.setStaticAnalysis(timeHash,codeHash ,data["source"]) #
+        task_info = codeStaticTaskMake(timeHash,codeHash, file_path)
+        return {
+            "msg": "Task created",
+            "info" : task_info
+        }
 
     else:
         return{
@@ -96,10 +105,16 @@ def validation(body):
     #print( body.get("data").get("cocoa") )
 
     mode = body.get("data").get("mode")
-    if(not ((mode is not None) and mode >=1 and mode <= 3)):
+    if(not ((mode is not None) and mode >=1 and mode <= 4)):
         return {"status":-1, "error": "Invalid Mode"}
     #Static
-    isSource      =  body.get("source") is not None
+    isSource      =  body.get("data").get("source") is not None
+    data = {}
+    data["mode"]          = mode
+    data["status"]          = 1
+    if ( mode == 4 and isSource):
+        data["source"] = body.get("data").get("source")
+        return data
     #Dynamic
     PoolKey = body.get("data").get("Poolkey")
     deployer = body.get("data").get("deployer")
@@ -116,11 +131,10 @@ def validation(body):
     if( not(isHooks and isCurrency0 and isCurrency1 and isFee and isTickSpacing) ):
         return {"status":-1, "error": "Invalid Mode"}
 
+
     
     
-    data = {}
-    data["mode"]          = mode
-    data["status"]          = 1
+
     _poolkey = {}
     _poolkey["hooks"]           = PoolKey.get("hooks")
     _poolkey["currency0"]       = PoolKey.get("currency0")
@@ -170,6 +184,8 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
             # doubleInit, upgradable
             idx = [0, 1, 4, 5, 6, 7] 
     elif(mode == 3):
+        idx = [0]
+    elif(mode == 4):
         idx = [0]
 
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
