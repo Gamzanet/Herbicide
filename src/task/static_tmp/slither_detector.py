@@ -54,8 +54,8 @@ def slither_detector(slither_detector_name, project_location,json_output):
             hook_data["success"] = False
             hook_data["error"] = "Slither test failed to run"
 
-    with open(output_file_path, 'w') as output_file:
-        json.dump(hook_data, output_file, indent=4)
+#    with open(output_file_path, 'w') as output_file:
+#        json.dump(hook_data, output_file, indent=4)
     if os.path.exists(temp):
         os.remove(temp)
     return hook_data
