@@ -113,7 +113,7 @@ def staticRun(timeHash, hook):
     return response
 
 def semgrep_raw(src):
-    cmd = 'semgrep --config "p/smart-contracts" {} --emacs'.format(src)
+    cmd = 'semgrep --config "p/smart-contracts" {} --json'.format(src)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     return res
 def staticRunByCode(timeHash,codeHash, src):
@@ -139,8 +139,20 @@ def staticRunByCode(timeHash,codeHash, src):
     res = get_analysis_result_with_threats(_path, get_model_suite())
     response["result"] = asdict(res, recurse=True)
     from engine.run_semgrep import run_semgrep_one
-    semgrep_res = semgrep_raw(src)
-    response["semgrep"] = semgrep_res.stdout #run_semgrep_one("", src)#이름 비우면 에러남
+    semgrep_res = json.loads(semgrep_raw(src).stdout)
+    semgrep_res_json = [
+        {
+            "detector": result["check_id"].split('.')[-1],  # Use only the last part of check_id
+            "data": {
+                "description": result["extra"]["message"],
+                "impact": result["extra"]["metadata"]["category"]
+            }
+        }
+        for result in semgrep_res["results"]
+    ]
+    response["result"]["threats"].append(semgrep_res_json)
+
+    # response["semgrep"] = semgrep_res.stdout #run_semgrep_one("", src)#이름 비우면 에러남
     response["mode"] = 4
     return response
 
