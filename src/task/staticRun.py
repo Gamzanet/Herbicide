@@ -106,6 +106,7 @@ def staticRun(timeHash, hook):
     response["slither"] = {}
     response["slither"]["detector"] = slither_detector_run()
     response["slither"]["printer"] = slither_printer_run(_paths[0].replace("src/","").replace(".sol",""))
+    response["code"] = code
     response["mode"] = 3
 
 
@@ -150,7 +151,8 @@ def staticRunByCode(timeHash,codeHash, src):
         }
         for result in semgrep_res["results"]
     ]
-    response["result"]["threats"].append(semgrep_res_json)
+    response["result"]["threats"] += semgrep_res_json
+    response["code"] = code
 
     # response["semgrep"] = semgrep_res.stdout #run_semgrep_one("", src)#이름 비우면 에러남
     response["mode"] = 4
