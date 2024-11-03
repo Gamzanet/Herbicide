@@ -51,8 +51,8 @@ def slither_printer(hook_contract, code_location ,slither_test_name, json_output
         hook_data["error"] = "Slither test failed to run"
 
 
-    with open(output_file_path, 'w') as output_file:
-        json.dump(hook_data, output_file, indent=4)
+#    with open(output_file_path, 'w') as output_file:
+#        json.dump(hook_data, output_file, indent=4)
 
     if os.path.exists(temp):
         os.remove(temp)
