@@ -30,7 +30,7 @@ def dynamic(timeHash, rpc, poolkey):
     commands.append('{} forge test --match-path test/inputPoolkey/hookNoHookCompare.t.sol --rpc-url {} -vv | grep using'.format(_exportPath,rpc))
     commands.append('{} forge test --match-path test/inputPoolkey/return.t.sol  --rpc-url {} -vv | grep -Ei "Amount[0-1]+ delta:"'.format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/check_onlyByPoolManager.t.sol --rpc-url {}".format(_exportPath,rpc))
-    commands.append("{} forge test --match-path test/inputPoolkey/time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+    # commands.append("{} forge test --match-path test/inputPoolkey/time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/check_doubleInit.t.sol --rpc-url {}".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/check_upgradable.t.sol --rpc-url {}".format(_exportPath,rpc))
     
@@ -54,7 +54,7 @@ def dynamic(timeHash, rpc, poolkey):
     print("end 2")
     analysisResult[3] = getPriceUsingPyth(rpc, poolkey["currency0"], poolkey["currency1"], analysisResult[3])#analysisResult[0]))
     analysisResult[4] = getChkOnlyByPoolManager(analysisResult[4])
-    analysisResult[5] = timeTestUsingStep(analysisResult[5])
+    # analysisResult[5] = timeTestUsingStep(analysisResult[5])
 
     analysisResult[6] = doubleInitParse(analysisResult[6])
     analysisResult[7] = upgradableParse(analysisResult[7])

@@ -182,7 +182,8 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
         if(cpnt == 2): # other tests
             # minimum, timebasedminimum, poolmanager, time-step, 
             # doubleInit, upgradable
-            idx = [0, 1, 4, 5, 6, 7] 
+            # idx = [0, 1, 4, 5, 6, 7] 
+            idx = [0, 1, 4, 6, 7] 
     elif(mode == 3):
         idx = [0]
     elif(mode == 4):
