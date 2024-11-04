@@ -147,7 +147,7 @@ def dynamic_OnlyByPoolManager(timeHash, rpc, poolkey, idx):
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
 
-    cmd = "{} forge test --match-path test/inputPoolkey/check_onlyByPoolManager.t.sol --fork-url {}".format(_exportPath,rpc)
+    cmd = "{} forge test --match-path test/inputPoolkey/check_onlyByPoolManager.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
 
     res = getChkOnlyByPoolManager(testRun(cmd))
     response["timeHash"] = timeHash

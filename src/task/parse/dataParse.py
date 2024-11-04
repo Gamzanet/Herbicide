@@ -256,9 +256,13 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
 
 
 def getChkOnlyByPoolManager(result):
-    
+    traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
     realRet = foundryTestParse(result)
     realRet["name"] = "OnlyByPoolManager-Chk"
+    
+    realRet["msg"] = result.stdout
+    realRet["traces"] = traces
+
     for i in range(len(realRet["testList"])):
         try:
             if(realRet["testList"][i]["status"] == "FAIL"):
@@ -271,6 +275,7 @@ def getChkOnlyByPoolManager(result):
             if(realRet["failList"][i]["status"] == "FAIL"):
                 realRet["failList"][i]["description"] = realRet["failList"][i]["msg"].split("[FAIL: revert: ")[1].split("] ")[0]
                 realRet["failList"][i]["impact"] = "High"
+                realRet["failList"][i]["trace"] = traces[i]
         except:
             realRet["failList"][i]["description"] = realRet["failList"][i]["msg"]
     return realRet
