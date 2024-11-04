@@ -24,8 +24,8 @@ def dynamicTaskMake(timeHash, rpc,poolkey):
     ids.append({"id" : key.id, "stat" : key.status})
     key = dynamic_OnlyByPoolManager.delay(timeHash, rpc, poolkey, 4) #4
     ids.append({"id" : key.id, "stat" : key.status})
-    key = dynamic_timeTestUsingStep.delay(timeHash, rpc, poolkey, 5) #5
-    ids.append({"id" : key.id, "stat" : key.status})
+    # key = dynamic_timeTestUsingStep.delay(timeHash, rpc, poolkey, 5) #5
+    # ids.append({"id" : key.id, "stat" : key.status})
     key = dynamic_doubleInit.delay(timeHash, rpc, poolkey, 6) #6
     ids.append({"id" : key.id, "stat" : key.status}) 
     key = dynamic_upgradable.delay(timeHash, rpc, poolkey, 7) #7
