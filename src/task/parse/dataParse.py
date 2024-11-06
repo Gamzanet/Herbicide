@@ -234,21 +234,24 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
         tmp[namelist[i]] = t
         t = {}
     ret = {}
-    for i in range(len(namelist)):
-      # calc_expected(price_current, liquidity,specified,fee):
-        if("SWAP-exact" in namelist[i]):
-            calc_value = getSwapPrice.calc_expected(
-                tmp[namelist[i]]["for-expected-current-price"] , 
-                tmp[namelist[i]]["for-expected-current-liquidity"], 
-                tmp[namelist[i]]["for-expected-amount0-specified"], 
-                tmp[namelist[i]]["for-expected-current-fee"]
-            )
-            tmp[namelist[i]]["calc"] = {}
-            tmp[namelist[i]]["calc"]["price_expected"] = calc_value[0]
-            tmp[namelist[i]]["calc"]["sqrtP_expected"] = calc_value[1]
-            tmp[namelist[i]]["calc"]["amount_in"] = calc_value[2]
-            tmp[namelist[i]]["calc"]["amount_out"] = calc_value[3]
+    try:
+        for i in range(len(namelist)):
+        # calc_expected(price_current, liquidity,specified,fee):
+            if("SWAP-exact" in namelist[i]):
+                calc_value = getSwapPrice.calc_expected(
+                    tmp[namelist[i]]["for-expected-current-price"] , 
+                    tmp[namelist[i]]["for-expected-current-liquidity"], 
+                    tmp[namelist[i]]["for-expected-amount0-specified"], 
+                    tmp[namelist[i]]["for-expected-current-fee"]
+                )
+                tmp[namelist[i]]["calc"] = {}
+                tmp[namelist[i]]["calc"]["price_expected"] = calc_value[0]
+                tmp[namelist[i]]["calc"]["sqrtP_expected"] = calc_value[1]
+                tmp[namelist[i]]["calc"]["amount_in"] = calc_value[2]
+                tmp[namelist[i]]["calc"]["amount_out"] = calc_value[3]
     #ret["msg"] = result
+    except:
+        ret["msgOut"] = result
     ret["name"] = "Price-compare-using-Pyth"
     ret["data"] = tmp
     ret["price"] = price
