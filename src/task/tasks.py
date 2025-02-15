@@ -218,7 +218,6 @@ def static(timeHash, poolKey):
 
 @app.task
 def static_by_code(timeHash,codeHash, src):
-
     print(src)
     tmp = staticRunByCode(timeHash, codeHash,src)
     tmp["idx"] = 0

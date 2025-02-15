@@ -311,6 +311,7 @@ def timeTestUsingStep(result):
         ret["out"] = res
 
     return ret
+
 def doubleInitParse(result):
     response = {}
     log_data = result.stdout.replace("  ","")
@@ -322,6 +323,7 @@ def doubleInitParse(result):
     # defaultdict로 slot 데이터 저장
     slot_data = [[],[]]
     failList = []
+    response["failList"] = failList
 
     # 정규식으로 매칭된 데이터 추출
     for match in pattern.finditer(log_data):

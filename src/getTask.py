@@ -67,7 +67,6 @@ def settingData(tmp):
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
     try:
-        print("qweqweq")
         print(f"Task Status: {result.status}")
         if result.state == "PENDING":
             print("pending....")

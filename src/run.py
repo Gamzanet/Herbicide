@@ -73,7 +73,7 @@ async def recv_result(request: Request):
         testCache = findTest(data["poolKey"], data["mode"])
         task_info = staticTaskMake(timeHash, data["poolKey"])
         print("3")
-    elif (data["mode"] == 4): # 정적 코드만
+    elif( data["mode"] == 4): # 정적 코드만
         codeHash = hashlib.sha256(str(data["source"]).encode()).hexdigest()
         file_path = analysisSetting.setStaticAnalysis(timeHash,codeHash ,data["source"]) #
         task_info = codeStaticTaskMake(timeHash,codeHash, file_path)
@@ -190,6 +190,7 @@ async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
         idx = [0]
 
     return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
+
 @app.get("/a")
 def read_root(request: Request):
     templates = Jinja2Templates(directory="templates")

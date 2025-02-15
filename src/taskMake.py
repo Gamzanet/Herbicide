@@ -1,6 +1,7 @@
 
 from task.tasks import analysis, dynamic, static, dynamic_minimum, dynamic_timeBasedMinimumTest, dynamic_hookCompare, dynamic_priceCheck,dynamic_OnlyByPoolManager, dynamic_timeTestUsingStep, dynamic_doubleInit, dynamic_upgradable, static_by_code
 from celery import group
+
 def staticTaskMake(timeHash, poolKey):
     result = static.delay(timeHash, poolKey)
     res = {
@@ -11,7 +12,7 @@ def staticTaskMake(timeHash, poolKey):
     print(f"Task Created: {res}")
     return res
 
-def dynamicTaskMake(timeHash, rpc,poolkey):
+def dynamicTaskMake(timeHash, rpc, poolkey):
     ids = []
 
     key = dynamic_minimum.delay(timeHash, rpc, poolkey, 0) # 0
@@ -37,8 +38,6 @@ def dynamicTaskMake(timeHash, rpc,poolkey):
     }
     return res
 
-
-
 def codeStaticTaskMake(timeHash, codeHash, src):
     key = static_by_code.delay(timeHash, codeHash, src)
     res = {
@@ -48,9 +47,6 @@ def codeStaticTaskMake(timeHash, codeHash, src):
         "tasks" : [{"id" : key.id, "stat" : key.status}]
     }
     return res
-
-
-
 
 def analysisTaskMake():
     result = analysis.delay(4,2)
