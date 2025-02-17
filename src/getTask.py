@@ -29,7 +29,6 @@ def settingData(tmp):
                     j["is_exactIn"] = True
                 if "Burn" in i:
                     j["is_burn"] = True
-
                 reParse["with_6909"]["swap"].append(j)
         else:
             if "addLiquidity" in i:
@@ -55,15 +54,12 @@ def settingData(tmp):
                 #     is_burn: boolean;
                 #     is_exactIn: boolean;
                 
-
     ret["data"] = reParse
     #ret["data"] = tmp["result"]
     #print(tmp["result"])
     ret["price"] = tmp["result"]["price"]
-
-    
-
     return ret
+
 def getTask(task_id):
     result = AsyncResult(task_id, app=app)
     try:

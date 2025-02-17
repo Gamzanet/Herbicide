@@ -62,7 +62,7 @@ async def recv_result(request: Request):
         testCache = findTest(data["poolKey"], data["mode"])
         analysisSetting.setDynamicAnalysis(timeHash, data["poolKey"], data["deployer"] )
         task_info = dynamicTaskMake( timeHash, 
-                                    __import__('os').environ.get('uni'), 
+                                    __import__('os').environ.get('local'), # rpc-url
                                     data["poolKey"] )
         print("2")
 
