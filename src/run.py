@@ -1,205 +1,145 @@
-from typing import Union
+from typing import Dict, Any
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
-from starlette.requests import Request
-from getTask import getTask
-from task.threadWork import testRun
-#from analysisSetting import setStaticAnalysis#, setAddressDynamicAnalysis, setOpDynamicAnalysis
-import analysisSetting
 import json
 import hashlib
 import time
+import asyncio
 
+# 내부 모듈 임포트
+from getTask import getTask
+from task.threadWork import testRun
+import analysisSetting
 from resultFind import findTest, _findTest
+from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake, codeStaticTaskMake
 
-
+# FastAPI 인스턴스 생성
 app = FastAPI()
-origins = origins = ["*"]                                                                                                                                                                                                  
-app.add_middleware(                                                                               
-    CORSMiddleware,                                                                             
-    allow_origins=origins,                                                                        
-    allow_credentials=True,                                                                      
-    allow_methods=["*"],                                                                        
-    allow_headers=["*"],                                                                     
-)    
 
+# CORS 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# 템플릿 설정
+templates = Jinja2Templates(directory="templates")
+
+# ✅ 루트 페이지
 @app.get("/")
 def read_root(request: Request):
-    templates = Jinja2Templates(directory="templates")
     return templates.TemplateResponse("index.html", {"request": request})
 
+# ✅ 특정 Task 결과 조회
 @app.get("/api/result/{task_id}")
 def send_result(task_id: str):
     return getTask(task_id)
 
+# ✅ Task 생성 (POST 요청)
 @app.post("/api/tasks")
-async def recv_result(request: Request):
-    
-    from taskMake import staticTaskMake, dynamicTaskMake, analysisTaskMake, codeStaticTaskMake
+async def create_task(request: Request):
     body = await request.body()
-    print(body)
-    data = validation(body)
-    
-    print(data)
-    if( data["status"] == -1 ):
-        return {
-            "msg" : "nono"
-        }
-    
-    timeHash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
-    
+    data = validate_request(body)
 
-    if( data["mode"] == 1 ): # 정적 동적
-        #그룹을 만들기 # 병렬말고 직렬로 하도록?
-        print("1")
+    if data["status"] == -1:
+        return {"msg": "Invalid request"}
+
+    time_hash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
+    
+    if data["mode"] == 1:  # 정적 + 동적 분석
         task_info = analysisTaskMake()
 
-    elif( data["mode"] == 2 ): #동적만
-        #동적 테스크 만들기
-        rpc = __import__('os').environ.get('uni')
+    elif data["mode"] == 2:  # 동적 분석만
+        rpc = __import__('os').environ.get('local')   # rpc-url
         testCache = findTest(data["poolKey"], data["mode"])
-        valid = testRun("cast call --rpc-url {} {} \"poolManager()\"".format(rpc, data["poolKey"]["hooks"]))
-        print(valid)
+        
+        valid = testRun(f"cast call --rpc-url {rpc} {data['poolKey']['hooks']} \"poolManager()\"")
         if len(valid.stdout.strip()) != 66 or len(valid.stderr) != 0:
-            return{
-            "msg" : "Not a hook"
-            }
-        analysisSetting.setDynamicAnalysis(timeHash, data["poolKey"], data["deployer"] )
-        task_info = dynamicTaskMake( timeHash, 
-                                    rpc, # rpc-url
-                                    data["poolKey"] )
-        print("2")
+            return {"msg": "Not a valid hook"}
 
-    elif( data["mode"] == 3 ): #정적만
-        #정적 테스크 만들기
-        # print(body.get("source"))
-        # print(dir(analysisSetting))
+        analysisSetting.setDynamicAnalysis(time_hash, data["poolKey"], data["deployer"])
+        task_info = dynamicTaskMake(time_hash, rpc, data["poolKey"])
+
+    elif data["mode"] == 3:  # 정적 분석만
         testCache = findTest(data["poolKey"], data["mode"])
-        task_info = staticTaskMake(timeHash, data["poolKey"])
-        print("3")
-    elif( data["mode"] == 4): # 정적 코드만
-        codeHash = hashlib.sha256(str(data["source"]).encode()).hexdigest()
-        file_path = analysisSetting.setStaticAnalysis(timeHash,codeHash ,data["source"]) #
-        task_info = codeStaticTaskMake(timeHash,codeHash, file_path)
-        return {
-            "msg": "Task created",
-            "info" : task_info
-        }
+        task_info = staticTaskMake(time_hash, data["poolKey"])
+
+    elif data["mode"] == 4:  # 정적 코드 분석
+        code_hash = hashlib.sha256(str(data["source"]).encode()).hexdigest()
+        file_path = analysisSetting.setStaticAnalysis(time_hash, code_hash, data["source"])
+        task_info = codeStaticTaskMake(time_hash, code_hash, file_path)
+        return {"msg": "Task created", "info": task_info}
 
     else:
-        return{
-            "msg" : "nono"
-        }
-    return {
-        "msg": "Task created",
-        "info" : task_info,
-        "testCache" : testCache
-    }
+        return {"msg": "Invalid mode"}
+
+    return {"msg": "Task created", "info": task_info, "testCache": testCache}
+
+# ✅ Task Group 조회 (보류)
 @app.get("/api/result/g/{group_id}")
 def get_task_group_status(group_id: str):
-    # groupID는 당장은 보류하는 것으로.. 
-    return 'a'
+    return "Not implemented yet"
 
-def validation(body):
+# ✅ 요청 데이터 유효성 검사
+def validate_request(body: bytes) -> Dict[str, Any]:
     try:
         body = json.loads(body)
     except json.JSONDecodeError:
-        return {"status":-1,"error": "Invalid JSON data"}
-    
-    #print( body.get("data").get("cocoa") )
+        return {"status": -1, "error": "Invalid JSON"}
 
-    mode = body.get("data").get("mode")
-    if(not ((mode is not None) and mode >=1 and mode <= 4)):
-        return {"status":-1, "error": "Invalid Mode"}
-    #Static
-    isSource      =  body.get("data").get("source") is not None
-    data = {}
-    data["mode"]          = mode
-    data["status"]          = 1
-    if ( mode == 4 and isSource):
-        data["source"] = body.get("data").get("source")
+    mode = body.get("data", {}).get("mode")
+    if mode not in {1, 2, 3, 4}:
+        return {"status": -1, "error": "Invalid mode"}
+
+    data = {"mode": mode, "status": 1}
+
+    if mode == 4 and body["data"].get("source"):
+        data["source"] = body["data"]["source"]
         return data
-    #Dynamic
-    PoolKey = body.get("data").get("Poolkey")
-    deployer = body.get("data").get("deployer")
-    if (deployer is None):
-        deployer = "0x4e59b44847b379578588920cA78FbF26c0B4956C"
-    print("PoolKey : {}\n mode : {}".format(PoolKey, mode))
 
-    isHooks       =  PoolKey.get("hooks") is not None
-    isCurrency0   =  PoolKey.get("currency0") is not None
-    isCurrency1   =  PoolKey.get("currency1") is not None
-    isFee         =  PoolKey.get("fee") is not None
-    isTickSpacing =  PoolKey.get("tickSpacing") is not None
+    pool_key = body.get("data", {}).get("Poolkey", {})
+    deployer = body.get("data", {}).get("deployer", "0x4e59b44847b379578588920cA78FbF26c0B4956C")
 
-    if( not(isHooks and isCurrency0 and isCurrency1 and isFee and isTickSpacing) ):
-        return {"status":-1, "error": "Invalid Mode"}
+    required_keys = {"hooks", "currency0", "currency1", "fee", "tickSpacing"}
+    if not required_keys.issubset(pool_key.keys()):
+        return {"status": -1, "error": "Invalid PoolKey structure"}
 
-
-    
-    
-
-    _poolkey = {}
-    _poolkey["hooks"]           = PoolKey.get("hooks")
-    _poolkey["currency0"]       = PoolKey.get("currency0")
-    _poolkey["currency1"]       = PoolKey.get("currency1")
-    _poolkey["fee"]             = PoolKey.get("fee")
-    _poolkey["tickSpacing"]     = PoolKey.get("tickSpacing")
-    data["poolKey"] = _poolkey
+    data["poolKey"] = {key: pool_key[key] for key in required_keys}
     data["deployer"] = deployer
-
     return data
 
-
-from fastapi.responses import StreamingResponse
-import time
-import asyncio
-async def event_stream(t,h, m, finder):
-    cnt = 0
+# ✅ 비동기 이벤트 스트리밍 (Task 상태 업데이트)
+async def event_stream(time_hash: str, hooks: str, mode: int, expected_tasks: list):
     current = []
     while True:
-        tests = _findTest(t, h, m, finder)
-        print(t, h , m)
-        new = [item for item in tests if item not in current]
+        tests = _findTest(time_hash, hooks, mode, expected_tasks)
+        new_tasks = [item for item in tests if item not in current]
         current = tests
-        print("c")
-        print(current)
-        print(new)
-        print(finder)
-        for i in range(len(new)):
-            print("send")
-            t = "data: complate idx : {}, task-id : {}\n\n".format(new[i]["idx"], new[i]["task_id"])
-            yield t
+
+        for task in new_tasks:
+            yield f"data: complete idx: {task['idx']}, task-id: {task['task_id']}\n\n"
+
         await asyncio.sleep(1)
-        if(len(current) >= len(finder)):
+        if len(current) >= len(expected_tasks):
             return
-        cnt += 1
 
+# ✅ 특정 Task 상태를 SSE로 제공
 @app.get("/api/noti/{timeHash}/{hooks}/{mode}/{cpnt}")
-async def get_events(timeHash: str, hooks: str, mode:int, cpnt:int):
-    idx = []
-    if (mode == 2): # dynamic
-        if(cpnt == 0): # price oracle
-            idx = [3]
-        if(cpnt == 1): # hook nohook compare
-            idx = [2]
-        if(cpnt == 2): # other tests
-            # minimum, timebasedminimum, poolmanager, time-step, 
-            # doubleInit, upgradable
-            # idx = [0, 1, 4, 5, 6, 7] 
-            idx = [0, 1, 4, 6, 7] 
-    elif(mode == 3):
-        idx = [0]
-    elif(mode == 4):
-        idx = [0]
+async def get_events(timeHash: str, hooks: str, mode: int, cpnt: int):
+    index_map = {
+        2: {0: [3], 1: [2], 2: [0, 1, 4, 6, 7]},  # Dynamic Analysis
+        3: [0],  # Static Analysis
+        4: [0],  # Code Analysis
+    }
+    tasks = index_map.get(mode, {}).get(cpnt, [])
+    return StreamingResponse(event_stream(timeHash, hooks, mode, tasks), media_type="text/event-stream")
 
-    return StreamingResponse(event_stream(timeHash, hooks, mode, idx), media_type="text/event-stream")
-
+# ✅ 테스트용 페이지
 @app.get("/a")
 def read_root(request: Request):
-    templates = Jinja2Templates(directory="templates")
     return templates.TemplateResponse("a.html", {"request": request})
