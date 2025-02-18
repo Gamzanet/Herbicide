@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from getTask import getTask
+from task.threadWork import testRun
 #from analysisSetting import setStaticAnalysis#, setAddressDynamicAnalysis, setOpDynamicAnalysis
 import analysisSetting
 import json
@@ -59,10 +60,17 @@ async def recv_result(request: Request):
 
     elif( data["mode"] == 2 ): #동적만
         #동적 테스크 만들기
+        rpc = __import__('os').environ.get('uni')
         testCache = findTest(data["poolKey"], data["mode"])
+        valid = testRun("cast call --rpc-url {} {} \"poolManager()\"".format(rpc, data["poolKey"]["hooks"]))
+        print(valid)
+        if len(valid.stdout.strip()) != 66 or len(valid.stderr) != 0:
+            return{
+            "msg" : "Not a hook"
+            }
         analysisSetting.setDynamicAnalysis(timeHash, data["poolKey"], data["deployer"] )
         task_info = dynamicTaskMake( timeHash, 
-                                    __import__('os').environ.get('local'), # rpc-url
+                                    rpc, # rpc-url
                                     data["poolKey"] )
         print("2")
 
