@@ -50,23 +50,22 @@ async def create_task(request: Request):
         return {"msg": "Invalid request"}
 
     time_hash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
-    
-    # ✅ 사용자가 선택한 체인에 따라 RPC 설정
-    rpc_env_var = {
-        "eth": "ETH",
-        "base": "BASE",
-        "uni": "UNI",
-    }
-    rpc_key = rpc_env_var.get(data["chain"])  # 기본 체인은 eth
-    rpc = os.getenv(rpc_key)  # 환경변수에서 가져오기
-
-    if not rpc:
-        return {"msg": f"Invalid chain '{data['chain']}' or missing environment variable for '{rpc_key}'"}
 
     if data["mode"] == 1:  # 정적 + 동적 분석
         task_info = analysisTaskMake()
 
     elif data["mode"] == 2:  # 동적 분석만
+        # ✅ 사용자가 선택한 체인에 따라 RPC 설정
+        rpc_env_var = {
+            "eth": "ETH",
+            "base": "BASE",
+            "uni": "UNI",
+        }
+        rpc_key = rpc_env_var.get(data["chain"])  # 기본 체인은 eth
+        rpc = os.getenv(rpc_key)  # 환경변수에서 가져오기
+    
+        if not rpc:
+            return {"msg": f"Invalid chain '{data['chain']}' or missing environment variable for '{rpc_key}'"}
         testCache = findTest(data["poolKey"], data["mode"])
         
         valid = testRun(f"cast call --rpc-url {rpc} {data['poolKey']['hooks']} \"poolManager()\"")
