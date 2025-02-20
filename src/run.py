@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.templating import Jinja2Templates
-import json
+import json, os
 import hashlib
 import time
 import asyncio
@@ -51,11 +51,22 @@ async def create_task(request: Request):
 
     time_hash = hashlib.sha256(str(int(time.time())).encode()).hexdigest()
     
+    # ✅ 사용자가 선택한 체인에 따라 RPC 설정
+    rpc_env_var = {
+        "eth": "ETH",
+        "base": "BASE",
+        "uni": "UNI",
+    }
+    rpc_key = rpc_env_var.get(data["chain"])  # 기본 체인은 eth
+    rpc = os.getenv(rpc_key)  # 환경변수에서 가져오기
+
+    if not rpc:
+        return {"msg": f"Invalid chain '{data['chain']}' or missing environment variable for '{rpc_key}'"}
+
     if data["mode"] == 1:  # 정적 + 동적 분석
         task_info = analysisTaskMake()
 
     elif data["mode"] == 2:  # 동적 분석만
-        rpc = __import__('os').environ.get('local')   # rpc-url
         testCache = findTest(data["poolKey"], data["mode"])
         
         valid = testRun(f"cast call --rpc-url {rpc} {data['poolKey']['hooks']} \"poolManager()\"")
@@ -104,6 +115,7 @@ def validate_request(body: bytes) -> Dict[str, Any]:
 
     pool_key = body.get("data", {}).get("Poolkey", {})
     deployer = body.get("data", {}).get("deployer", "0x4e59b44847b379578588920cA78FbF26c0B4956C")
+    rpc = body.get("data", {}).get("chain", "eth")
 
     required_keys = {"hooks", "currency0", "currency1", "fee", "tickSpacing"}
     if not required_keys.issubset(pool_key.keys()):
@@ -111,6 +123,7 @@ def validate_request(body: bytes) -> Dict[str, Any]:
 
     data["poolKey"] = {key: pool_key[key] for key in required_keys}
     data["deployer"] = deployer
+    data["chain"] = rpc
     return data
 
 # ✅ 비동기 이벤트 스트리밍 (Task 상태 업데이트)
