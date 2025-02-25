@@ -74,7 +74,7 @@ def getTask(task_id):
             if(ret["mode"] == 3 ):
                 return {"task_id": task_id, "status": "Success", "result": ret}
 
-            if(ret["idx"] == 3):
+            if(ret["idx"] == 9):
                 ret = settingData(ret)
                 print("this")
             #print(f"Task result: {result.result}")

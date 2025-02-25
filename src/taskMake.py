@@ -14,31 +14,30 @@ def staticTaskMake(timeHash, poolKey):
 def dynamicTaskMake(timeHash, rpc, poolkey):
     ids = []
 
-    key = dynamic_minimum.delay(timeHash, rpc, poolkey, 0) # 0
+    key = dynamic_minimumAdd.delay(timeHash, rpc, poolkey, 0) #0
     ids.append({"id" : key.id, "stat" : key.status}) 
-    key = dynamic_timeBasedMinimumTest.delay(timeHash, rpc, poolkey, 1) #1
+    key = dynamic_minimumRemove.delay(timeHash, rpc, poolkey, 1) #1
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    key = dynamic_minimumSwap.delay(timeHash, rpc, poolkey, 2) #2
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    key = dynamic_minimumDonate.delay(timeHash, rpc, poolkey, 3) #3
+    ids.append({"id" : key.id, "stat" : key.status}) 
+
+    key = dynamic_timeBasedMinimumTest.delay(timeHash, rpc, poolkey, 4) #4
     ids.append({"id" : key.id, "stat" : key.status})
-    key = dynamic_hookCompare.delay(timeHash, rpc, poolkey, 2) #2
+    key = dynamic_OnlyByPoolManager.delay(timeHash, rpc, poolkey, 5) #5
     ids.append({"id" : key.id, "stat" : key.status})
-    key = dynamic_priceCheck.delay(timeHash, rpc, poolkey, 3) #3
-    ids.append({"id" : key.id, "stat" : key.status})
-    key = dynamic_OnlyByPoolManager.delay(timeHash, rpc, poolkey, 4) #4
-    ids.append({"id" : key.id, "stat" : key.status})
-    # key = dynamic_timeTestUsingStep.delay(timeHash, rpc, poolkey, 5) #5
-    # ids.append({"id" : key.id, "stat" : key.status})
     key = dynamic_doubleInit.delay(timeHash, rpc, poolkey, 6) #6
     ids.append({"id" : key.id, "stat" : key.status}) 
     key = dynamic_upgradable.delay(timeHash, rpc, poolkey, 7) #7
     ids.append({"id" : key.id, "stat" : key.status})
+    key = dynamic_hookCompare.delay(timeHash, rpc, poolkey, 8) #8
+    ids.append({"id" : key.id, "stat" : key.status})
+    key = dynamic_priceCheck.delay(timeHash, rpc, poolkey, 9) #9
+    ids.append({"id" : key.id, "stat" : key.status})
 
-    key = dynamic_minimumAdd.delay(timeHash, rpc, poolkey, 8) # 8
-    ids.append({"id" : key.id, "stat" : key.status}) 
-    key = dynamic_minimumRemove.delay(timeHash, rpc, poolkey, 9) # 9
-    ids.append({"id" : key.id, "stat" : key.status}) 
-    key = dynamic_minimumSwap.delay(timeHash, rpc, poolkey, 10) # 10
-    ids.append({"id" : key.id, "stat" : key.status}) 
-    key = dynamic_minimumDonate.delay(timeHash, rpc, poolkey, 11) # 11
-    ids.append({"id" : key.id, "stat" : key.status}) 
+    # key = dynamic_timeTestUsingStep.delay(timeHash, rpc, poolkey, 5) #5
+    # ids.append({"id" : key.id, "stat" : key.status})
     
     res = {
         "hooks" : poolkey["hooks"],

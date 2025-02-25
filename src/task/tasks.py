@@ -78,7 +78,6 @@ def dynamic_minimum(timeHash, rpc, poolkey, idx):
     st = time.time()
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
     cmd = "{} forge test --match-path test/inputPoolkey/MinimumTest.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
-
     res = minimumTestParse(testRun(cmd))
     response["timeHash"] = timeHash
     response["poolKey"] = poolkey
@@ -87,7 +86,66 @@ def dynamic_minimum(timeHash, rpc, poolkey, idx):
     response["idx"] = idx
     ed = time.time()
     response["time"] = ed - st
-
+    return response
+@app.task
+def dynamic_minimumAdd(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_add.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumAddParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+@app.task
+def dynamic_minimumRemove(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_remove.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumRemoveParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+@app.task
+def dynamic_minimumSwap(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_swap.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumSwapParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+@app.task
+def dynamic_minimumDonate(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_donate.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumDonateParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
     return response
 
 @app.task
@@ -157,6 +215,7 @@ def dynamic_OnlyByPoolManager(timeHash, rpc, poolkey, idx):
     ed = time.time()
     response["time"] = ed - st
     return response
+
 @app.task
 def dynamic_timeTestUsingStep(timeHash, rpc, poolkey, idx):
     response = {}
@@ -174,6 +233,7 @@ def dynamic_timeTestUsingStep(timeHash, rpc, poolkey, idx):
     ed = time.time()
     response["time"] = ed - st
     return response
+
 @app.task
 def dynamic_doubleInit(timeHash, rpc, poolkey, idx):
     response = {}
@@ -189,6 +249,7 @@ def dynamic_doubleInit(timeHash, rpc, poolkey, idx):
     ed = time.time()
     response["time"] = ed - st
     return response
+
 @app.task
 def dynamic_upgradable(timeHash, rpc, poolkey, idx):
     response = {}
@@ -206,77 +267,12 @@ def dynamic_upgradable(timeHash, rpc, poolkey, idx):
     return response
 
 @app.task
-def dynamic_minimumAdd(timeHash, rpc, poolkey, idx):
-    response = {}
-    st = time.time()
-    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_add.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
-    res = minimumAddParse(testRun(cmd))
-    response["timeHash"] = timeHash
-    response["poolKey"] = poolkey
-    response["mode"] = 2
-    response["result"] = res
-    response["idx"] = idx
-    ed = time.time()
-    response["time"] = ed - st
-    return response
-
-@app.task
-def dynamic_minimumRemove(timeHash, rpc, poolkey, idx):
-    response = {}
-    st = time.time()
-    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_remove.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
-    res = minimumRemoveParse(testRun(cmd))
-    response["timeHash"] = timeHash
-    response["poolKey"] = poolkey
-    response["mode"] = 2
-    response["result"] = res
-    response["idx"] = idx
-    ed = time.time()
-    response["time"] = ed - st
-    return response
-
-@app.task
-def dynamic_minimumSwap(timeHash, rpc, poolkey, idx):
-    response = {}
-    st = time.time()
-    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_swap.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
-    res = minimumSwapParse(testRun(cmd))
-    response["timeHash"] = timeHash
-    response["poolKey"] = poolkey
-    response["mode"] = 2
-    response["result"] = res
-    response["idx"] = idx
-    ed = time.time()
-    response["time"] = ed - st
-    return response
-
-@app.task
-def dynamic_minimumDonate(timeHash, rpc, poolkey, idx):
-    response = {}
-    st = time.time()
-    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
-    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_donate.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
-    res = minimumDonateParse(testRun(cmd))
-    response["timeHash"] = timeHash
-    response["poolKey"] = poolkey
-    response["mode"] = 2
-    response["result"] = res
-    response["idx"] = idx
-    ed = time.time()
-    response["time"] = ed - st
-    return response
-
-@app.task
 def static(timeHash, poolKey):
     print("poolkey")
     print(poolKey)
     tmp = staticRun(timeHash, poolKey["hooks"])
     tmp["idx"] = 0
     tmp["poolKey"] = poolKey
-    
     return tmp
 
 @app.task
@@ -285,5 +281,4 @@ def static_by_code(timeHash,codeHash, src):
     tmp = staticRunByCode(timeHash, codeHash,src)
     tmp["idx"] = 0
     tmp["codeHash"] = codeHash
-    
     return tmp
