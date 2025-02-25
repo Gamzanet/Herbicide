@@ -1,5 +1,4 @@
-
-from task.tasks import analysis, dynamic, static, dynamic_minimum, dynamic_timeBasedMinimumTest, dynamic_hookCompare, dynamic_priceCheck,dynamic_OnlyByPoolManager, dynamic_timeTestUsingStep, dynamic_doubleInit, dynamic_upgradable, static_by_code
+from task.tasks import *
 from celery import group
 
 def staticTaskMake(timeHash, poolKey):
@@ -31,6 +30,16 @@ def dynamicTaskMake(timeHash, rpc, poolkey):
     ids.append({"id" : key.id, "stat" : key.status}) 
     key = dynamic_upgradable.delay(timeHash, rpc, poolkey, 7) #7
     ids.append({"id" : key.id, "stat" : key.status})
+
+    key = dynamic_minimumAdd.delay(timeHash, rpc, poolkey, 8) # 8
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    key = dynamic_minimumRemove.delay(timeHash, rpc, poolkey, 9) # 9
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    key = dynamic_minimumSwap.delay(timeHash, rpc, poolkey, 10) # 10
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    key = dynamic_minimumDonate.delay(timeHash, rpc, poolkey, 11) # 11
+    ids.append({"id" : key.id, "stat" : key.status}) 
+    
     res = {
         "hooks" : poolkey["hooks"],
         "timeHash" : timeHash,

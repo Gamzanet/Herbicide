@@ -18,7 +18,7 @@ def setOpDynamicAnalysis(task_id, opcode):
     #확인하는 로직 해야함
     #result = subprocess.run("".format(opcode), shell=True, capture_output=True, text=True)
 
-def setDynamicAnalysis(timeHash, poolkey,deployer ):
+def setDynamicAnalysis(timeHash, poolkey,deployer):
     data = {
         "data": {
             "currency0": poolkey["currency0"], 

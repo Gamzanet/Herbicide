@@ -135,13 +135,135 @@ def minimumTestParse(result):
         "Fail to swap, using takeClaims",
         "Fail to swap, using takeClaims",
         "Fail to swap, using settleUsingBurn",
-        "Fail to check protocolFee works well",
         "Fail to donate, when Pool has liquidity",
         "Fail to donate with one Token",
         "Fail to check emit log, when donate to pool",
-        "test_collectProtocolFees_ERC20_accumulateFees_gas",
-        "test_collectProtocolFees_ERC20_accumulateFees_exactOutput",
-        "test_collectProtocolFees_ERC20_returnsAllFeesIf0IsProvidedAsParameter"
+    ]
+    failCnt = 0
+    for i in range(len(realRet["testList"])):
+        if(realRet["testList"][i]["status"] == "FAIL"):
+            try:
+                realRet["testList"][i]["description"] = msgs[i]
+                realRet["testList"][i]["trace"] = traces[failCnt]
+
+                realRet["failList"][failCnt]["description"] = msgs[i]
+                realRet["failList"][failCnt]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
+                if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
+                    realRet["testList"][i]["OOG"] = 1
+                    realRet["failList"][failCnt]["OOG"] = 1
+                else:
+                    realRet["testList"][i]["OOG"] = 0
+                    realRet["failList"][failCnt]["OOG"] = 0
+                failCnt += 1
+            except:
+                realRet["testList"][i]["description"] = "msg"                
+                realRet["testList"][i]["trace"] = "trace not found"          
+    return realRet
+
+def minimumAddParse(result):
+    traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
+    realRet = foundryTestParse(result)
+    realRet["name"] = "Minimum_Add"
+    msgs = [
+        "Fail to add liquidity",
+        "Fail to add liquidity twice within same range",
+        "Fail to add liquidity through ERC6909",
+    ]
+    failCnt = 0
+    for i in range(len(realRet["testList"])):
+        if(realRet["testList"][i]["status"] == "FAIL"):
+            try:
+                realRet["testList"][i]["description"] = msgs[i]
+                realRet["testList"][i]["trace"] = traces[failCnt]
+
+                realRet["failList"][failCnt]["description"] = msgs[i]
+                realRet["failList"][failCnt]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
+                if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
+                    realRet["testList"][i]["OOG"] = 1
+                    realRet["failList"][failCnt]["OOG"] = 1
+                else:
+                    realRet["testList"][i]["OOG"] = 0
+                    realRet["failList"][failCnt]["OOG"] = 0
+                failCnt += 1
+            except:
+                realRet["testList"][i]["description"] = "msg"                
+                realRet["testList"][i]["trace"] = "trace not found"          
+    return realRet
+
+def minimumRemoveParse(result):
+    traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
+    realRet = foundryTestParse(result)
+    realRet["name"] = "Minimum_Remove"
+    msgs = [
+        "Fail to remove liquidity",
+        "Fail to remove partial liquidity",
+        "Fail to receive ERC6909 with remove liquidity",
+    ]
+    failCnt = 0
+    for i in range(len(realRet["testList"])):
+        if(realRet["testList"][i]["status"] == "FAIL"):
+            try:
+                realRet["testList"][i]["description"] = msgs[i]
+                realRet["testList"][i]["trace"] = traces[failCnt]
+
+                realRet["failList"][failCnt]["description"] = msgs[i]
+                realRet["failList"][failCnt]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
+                if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
+                    realRet["testList"][i]["OOG"] = 1
+                    realRet["failList"][failCnt]["OOG"] = 1
+                else:
+                    realRet["testList"][i]["OOG"] = 0
+                    realRet["failList"][failCnt]["OOG"] = 0
+                failCnt += 1
+            except:
+                realRet["testList"][i]["description"] = "msg"                
+                realRet["testList"][i]["trace"] = "trace not found"          
+    return realRet
+
+def minimumSwapParse(result):
+    traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
+    realRet = foundryTestParse(result)
+    realRet["name"] = "Minimum_Swap"
+    msgs = [
+        "Fail to swap",
+        "Fail to swap with highly pricelimit delta",
+        "Fail to swap, using takeClaims",
+        "Fail to swap, using takeClaims",
+        "Fail to swap, using settleUsingBurn",
+    ]
+    failCnt = 0
+    for i in range(len(realRet["testList"])):
+        if(realRet["testList"][i]["status"] == "FAIL"):
+            try:
+                realRet["testList"][i]["description"] = msgs[i]
+                realRet["testList"][i]["trace"] = traces[failCnt]
+
+                realRet["failList"][failCnt]["description"] = msgs[i]
+                realRet["failList"][failCnt]["trace"] = traces[failCnt]
+                realRet["failList"][failCnt]["impact"] = "Critical"
+                if( "[OutOfGas] EvmError: OutOfGas" in traces[failCnt] ):
+                    realRet["testList"][i]["OOG"] = 1
+                    realRet["failList"][failCnt]["OOG"] = 1
+                else:
+                    realRet["testList"][i]["OOG"] = 0
+                    realRet["failList"][failCnt]["OOG"] = 0
+                failCnt += 1
+            except:
+                realRet["testList"][i]["description"] = "msg"                
+                realRet["testList"][i]["trace"] = "trace not found"          
+    return realRet
+
+def minimumDonateParse(result):
+    traces = re.findall(r'Traces:\n(.*?)(?=\n\n|\Z)', result.stdout, re.DOTALL)
+    realRet = foundryTestParse(result)
+    realRet["name"] = "Minimum_Donate"
+    msgs = [
+        "Fail to donate, when Pool has liquidity",
+        "Fail to donate with one Token",
+        "Fail to check emit log, when donate to pool",
     ]
     failCnt = 0
     for i in range(len(realRet["testList"])):

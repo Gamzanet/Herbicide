@@ -4,7 +4,7 @@ import time
 from .config import app  # config.py에서 app 객체를 가져옴
 import sys
 import os
-from .parse.dataParse import hookCompareParse, minimumTestParse, getPriceUsingPyth, timeBasedMinimumTestParse, getChkOnlyByPoolManager, timeTestUsingStep, doubleInitParse, upgradableParse
+from .parse.dataParse import *
 from .staticRun import staticRun, staticRunByCode
 from .threadWork import threadRun, testRun
 # 작업 정의
@@ -33,7 +33,12 @@ def dynamic(timeHash, rpc, poolkey):
     # commands.append("{} forge test --match-path test/inputPoolkey/time_minimum_step.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/check_doubleInit.t.sol --rpc-url {}".format(_exportPath,rpc))
     commands.append("{} forge test --match-path test/inputPoolkey/check_upgradable.t.sol --rpc-url {}".format(_exportPath,rpc))
-    
+
+    # commands.append("{} forge test --match-path test/inputPoolkey/Minimum_add.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+    # commands.append("{} forge test --match-path test/inputPoolkey/Minimum_remove.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+    # commands.append("{} forge test --match-path test/inputPoolkey/Minimum_swap.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+    # commands.append("{} forge test --match-path test/inputPoolkey/Minimum_donate.t.sol --rpc-url {} -vvv".format(_exportPath,rpc))
+
     threads = []
     for command in commands:
         threads.append(threadRun(command))
@@ -47,15 +52,11 @@ def dynamic(timeHash, rpc, poolkey):
     print("time : {}".format(ed - st))
     print("start : {}".format(st))
     analysisResult[0] = minimumTestParse(analysisResult[0])
-    print("end 0 ")
     analysisResult[1] = timeBasedMinimumTestParse(analysisResult[1])
-    print("end 1")
     analysisResult[2] = hookCompareParse(analysisResult[2])
-    print("end 2")
     analysisResult[3] = getPriceUsingPyth(rpc, poolkey["currency0"], poolkey["currency1"], analysisResult[3])#analysisResult[0]))
     analysisResult[4] = getChkOnlyByPoolManager(analysisResult[4])
     # analysisResult[5] = timeTestUsingStep(analysisResult[5])
-
     analysisResult[6] = doubleInitParse(analysisResult[6])
     analysisResult[7] = upgradableParse(analysisResult[7])
 
@@ -65,10 +66,8 @@ def dynamic(timeHash, rpc, poolkey):
     print("start : {}".format(st))
     print(analysisResult)
     
-    
     response = {}
     response["analysisResult"] = analysisResult
-    
     response["poolKey"] = poolkey
     response["mode"] = 2
     return response
@@ -197,6 +196,70 @@ def dynamic_upgradable(timeHash, rpc, poolkey, idx):
     _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
     cmd = "{} forge test --match-path test/inputPoolkey/check_upgradable.t.sol --fork-url {}".format(_exportPath,rpc)
     res = upgradableParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+
+@app.task
+def dynamic_minimumAdd(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_add.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumAddParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+
+@app.task
+def dynamic_minimumRemove(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_remove.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumRemoveParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+
+@app.task
+def dynamic_minimumSwap(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_swap.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumSwapParse(testRun(cmd))
+    response["timeHash"] = timeHash
+    response["poolKey"] = poolkey
+    response["mode"] = 2
+    response["result"] = res
+    response["idx"] = idx
+    ed = time.time()
+    response["time"] = ed - st
+    return response
+
+@app.task
+def dynamic_minimumDonate(timeHash, rpc, poolkey, idx):
+    response = {}
+    st = time.time()
+    _exportPath = "export _targetPoolKey='dynamic_{}_{}.json';".format(timeHash, poolkey["hooks"])
+    cmd = "{} forge test --match-path test/inputPoolkey/Minimum_donate.t.sol --fork-url {} -vvv".format(_exportPath,rpc)
+    res = minimumDonateParse(testRun(cmd))
     response["timeHash"] = timeHash
     response["poolKey"] = poolkey
     response["mode"] = 2
