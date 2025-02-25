@@ -146,7 +146,7 @@ def staticRunByCode(timeHash,codeHash, src):
             "detector": result["check_id"].split('.')[-1],  # Use only the last part of check_id
             "data": {
                 "description": result["extra"]["message"],
-                "impact": result["extra"]["metadata"]["category"]
+                "impact": result["extra"]["severity"]
             }
         }
         for result in semgrep_res["results"]
