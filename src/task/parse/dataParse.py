@@ -324,6 +324,7 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
         price = getOffchainPrice.fetch_token_price(token0_symbol, token1_symbol)
     except:
         price = -1
+
     namelist = [
         "addLiquidity6909-","addLiquidity-",
         "Donate-",
@@ -332,7 +333,6 @@ def getPriceUsingPyth(rpc_url, token0_address, token1_address, result):
         "SWAP-exactIn-", "SWAP-exactOut Burn 6909", 
         "SWAP-exactOut Mint 6909", "SWAP-exactOut-"
     ]
-
     result = result.stdout
     tmp = {}
     for i in range(len(namelist)):
