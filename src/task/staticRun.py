@@ -44,11 +44,11 @@ def get_analysis_result_with_threats(code: str, models: list[ThreatModelBase]) -
     return _res
 
 
-def staticRun(timeHash, hook):
+def staticRun(timeHash, rpc, hook):
     shutil.rmtree("/app/engine/gamza-static/code/unichain", ignore_errors=True)
     os.chdir(engine_path)
     _address = hook
-    contract_json = get_contract_json(_address)
+    contract_json = get_contract_json(_address, rpc)
     _paths = store_all_dependencies(_address)
     store_remappings(_address)
     store_foundry_toml()
@@ -157,33 +157,3 @@ def staticRunByCode(timeHash,codeHash, src):
     # response["semgrep"] = semgrep_res.stdout #run_semgrep_one("", src)#이름 비우면 에러남
     response["mode"] = 4
     return response
-
-'''
-[2024-11-03 03:02:03,334: ERROR/MainProcess] Task task.tasks.static_by_code[b163fe20-20ba-437a-bf71-fe6332565349] raised unexpected: KeyError('')
-Traceback (most recent call last):
-  File "/Users/sori/backend/api/lib/python3.12/site-packages/celery/app/trace.py", line 453, in trace_task
-    R = retval = fun(*args, **kwargs)
-                 ^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/lib/python3.12/site-packages/celery/app/trace.py", line 736, in __protected_call__
-    return self.run(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/tasks.py", line 223, in static_by_code
-    tmp = staticRunByCode(timeHash, codeHash,src)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/staticRun.py", line 139, in staticRunByCode
-    response["semgrep"] = run_semgrep_one("", src)
-                          ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 38, in run_semgrep_one
-    _msg_raw_schema = read_message_schema_by_rule_name(_rule_name)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 13, in read_message_schema_by_rule_name
-    return read_rule_by_name(_rule_name)["message"]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/engine/run_semgrep.py", line 18, in read_rule_by_name
-    with open(f"rules/{rule_rel_path_by_name(_rule_name)}", "r") as f:
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/sori/backend/api/fix-run/src/task/../../engine/gamza-static/lib/utils/paths.py", line 18, in rule_rel_path_by_name
-    class_name = "info" if "info-" in rule_name else rules["class"][rule_name]
-                                                     ~~~~~~~~~~~~~~^^^^^^^^^^^
-KeyError: ''
-'''

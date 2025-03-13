@@ -267,10 +267,10 @@ def dynamic_upgradable(timeHash, rpc, poolkey, idx):
     return response
 
 @app.task
-def static(timeHash, poolKey):
+def static(timeHash, rpc, poolKey):
     print("poolkey")
     print(poolKey)
-    tmp = staticRun(timeHash, poolKey["hooks"])
+    tmp = staticRun(timeHash, rpc, poolKey["hooks"])
     tmp["idx"] = 0
     tmp["poolKey"] = poolKey
     return tmp

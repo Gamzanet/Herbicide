@@ -1,8 +1,8 @@
 from task.tasks import *
 from celery import group
 
-def staticTaskMake(timeHash, poolKey):
-    result = static.delay(timeHash, poolKey)
+def staticTaskMake(timeHash, rpc, poolKey):
+    result = static.delay(timeHash, rpc, poolKey)
     res = {
         "hooks" : poolKey["hooks"],
         "timeHash" : timeHash,
