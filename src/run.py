@@ -145,9 +145,9 @@ async def event_stream(time_hash: str, hooks: str, mode: int, expected_tasks: li
 @app.get("/api/noti/{timeHash}/{hooks}/{mode}/{cpnt}")
 async def get_events(timeHash: str, hooks: str, mode: int, cpnt: int):
     index_map = {
-        2: {0: [3], 1: [2], 2: [0, 1, 4, 6, 7]},  # Dynamic Analysis
-        3: [0],  # Static Analysis
-        4: [0],  # Code Analysis
+        2: {0: [0, 1, 2, 3, 4, 5, 6, 7], 1: [8], 2: [9]},  # Dynamic Analysis
+        3: {0: [0]},  # Static Analysis
+        4: {0: [0]},  # Code Analysis
     }
     tasks = index_map.get(mode, {}).get(cpnt, [])
     return StreamingResponse(event_stream(timeHash, hooks, mode, tasks), media_type="text/event-stream")
